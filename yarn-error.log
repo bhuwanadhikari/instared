@@ -1,0 +1,56 @@
+Arguments: 
+  /Users/bhuwanadhikari/.nvm/versions/node/v16.14.0/bin/node /Users/bhuwanadhikari/.nvm/versions/node/v16.14.0/bin/yarn dev
+
+PATH: 
+  /Users/bhuwanadhikari/.nvm/versions/node/v16.14.0/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Library/Apple/usr/bin:/Users/bhuwanadhikari/.nvm/versions/node/v16.14.0/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/Users/bhuwanadhikari/Library/Android/sdk/emulator:/Users/bhuwanadhikari/Library/Android/sdk/tools:/Users/bhuwanadhikari/Library/Android/sdk/tools/bin:/Users/bhuwanadhikari/Library/Android/sdk/platform-tools:/Users/bhuwanadhikari/Library/Android/sdk/emulator:/Users/bhuwanadhikari/Library/Android/sdk/tools:/Users/bhuwanadhikari/Library/Android/sdk/tools/bin:/Users/bhuwanadhikari/Library/Android/sdk/platform-tools
+
+Yarn version: 
+  1.22.17
+
+Node version: 
+  16.14.0
+
+Platform: 
+  darwin arm64
+
+Trace: 
+  SyntaxError: /Users/bhuwanadhikari/Documents/learns/instareddit/package.json: Unexpected end of JSON input
+      at JSON.parse (<anonymous>)
+      at /Users/bhuwanadhikari/.nvm/versions/node/v16.14.0/lib/node_modules/yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/Users/bhuwanadhikari/.nvm/versions/node/v16.14.0/lib/node_modules/yarn/lib/cli.js:310:30)
+      at /Users/bhuwanadhikari/.nvm/versions/node/v16.14.0/lib/node_modules/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "instareddit",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+    "main": "src/server.ts",
+    "scripts": {
+        "dev": "nodemon src/server.ts",
+        "build": "rm -rf build/ && prettier --write src/ && tsc"
+      },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "@types/axios": "^0.14.0",
+      "@types/express": "^4.17.13",
+      "@types/morgan": "^1.9.3",
+      "axios": "^0.27.2",
+      "express": "^4.18.1",
+      "morgan": "^1.10.0",
+      "nodemon": "^2.0.19",
+      "ts-node": "^10.9.1",
+      "typescript": "^4.8.3"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
