@@ -4,6 +4,6 @@ const router = express.Router();
 
 router.get("/posts", controller.getPosts);
 router.get("/posts/:id", controller.getPost);
-router.get("/posts/:id", controller.getPostsBySubreddit);
+router.get("/moderators/", controller.getPostsBySubreddit);
 
 export = router;

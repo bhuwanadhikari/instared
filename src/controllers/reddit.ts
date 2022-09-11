@@ -1,5 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import axios, { AxiosResponse } from "axios";
+import Snoowrap from "snoowrap";
+import { appConfig } from "../constants";
+
+const r = new Snoowrap({
+  userAgent: "whatever",
+  username: appConfig.username,
+  clientId: appConfig.clientId,
+  clientSecret: appConfig.clientSecret,
+  password: appConfig.password,
+});
 
 interface Post {
   userId: Number;
@@ -25,13 +35,55 @@ const getPostsBySubreddit = async (
   res: Response,
   next: NextFunction
 ) => {
-  // get some posts
-  let result: AxiosResponse = await axios.get(
-    `https://jsonplaceholder.typicode.com/posts`
-  );
-  let posts: [Post] = result.data;
+  const posts = await r
+    .getSubreddit("nepal")
+    .getTop()
+    .then((res) => {
+      const filtered = res
+        .filter((item) => {
+          return (
+            item.title.length < 280 &&
+            item.title[item.title.length - 1] === "?" &&
+            item.num_comments > 25
+          );
+        })
+        .map((item) => {
+          return { title: item.title, id: item.id, comments: [] };
+        });
+
+      // filtered.forEach((post) => {});
+
+      return filtered;
+    });
+
+  const ccc: any =
+    // for (let post of posts) {
+    await r
+      .getSubmission(posts[1].id)
+      .expandReplies({ limit: Infinity, depth: 1 })
+      .then(({ author, subreddit, title, ups, num_comments, comments }) => {
+        return {
+          author,
+          subreddit,
+          title,
+          ups,
+          num_comments,
+          comments: comments
+            .filter((c) => c.body.length < 280 && c.ups > 10)
+            .map(({ author, ups, body }) => ({
+              author,
+              ups,
+              body,
+            })),
+        };
+      });
+  // }
+
+  console.log(ccc);
+  // let result: AxiosResponse = await axios.post(``);
+  // let posts: [Post] = result.data;
   return res.status(200).json({
-    message: posts,
+    message: ccc,
   });
 };
 
@@ -50,3 +102,4 @@ const getPost = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 export default { getPosts, getPost, getPostsBySubreddit };
+//
