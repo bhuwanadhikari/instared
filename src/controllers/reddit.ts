@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import axios, { AxiosResponse } from "axios";
 import Snoowrap from "snoowrap";
 import { appConfig } from "../constants";
+import nodeHtmlToImage from "node-html-to-image";
+import { getHtml } from "../utils/common";
 
 const r = new Snoowrap({
   userAgent: "whatever",
@@ -30,6 +32,35 @@ const getPosts = async (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
+const createImage = async (req: Request, res: Response, next: NextFunction) => {
+  // const posts = await r
+  //   .getSubreddit("nepal")
+  //   .getTop()
+  //   .then((res) => {
+  //     const filtered = res
+  //       .filter((item) => {
+  //         return (
+  //           item.title.length < 280 &&
+  //           item.title[item.title.length - 1] === "?" &&
+  //           item.num_comments > 25
+  //         );
+  //       })
+  //       .map((item) => {
+  //         return { title: item.title, id: item.id, comments: [] };
+  //       });
+
+  //     return filtered;
+  //   });
+  nodeHtmlToImage({
+    output: "./images/image.png",
+    html: getHtml(),
+  }).then(() => console.log("The imagesd was created successfully!"));
+
+  return res.status(200).json({
+    message: "created",
+  });
+};
+
 const getPostsBySubreddit = async (
   req: Request,
   res: Response,
@@ -51,15 +82,14 @@ const getPostsBySubreddit = async (
           return { title: item.title, id: item.id, comments: [] };
         });
 
-      // filtered.forEach((post) => {});
-
       return filtered;
     });
+  console.log(posts);
 
   const ccc: any =
     // for (let post of posts) {
     await r
-      .getSubmission(posts[1].id)
+      .getSubmission(posts[0].id)
       .expandReplies({ limit: Infinity, depth: 1 })
       .then(({ author, subreddit, title, ups, num_comments, comments }) => {
         return {
@@ -101,5 +131,5 @@ const getPost = async (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-export default { getPosts, getPost, getPostsBySubreddit };
+export default { getPosts, getPost, getPostsBySubreddit, createImage };
 //
