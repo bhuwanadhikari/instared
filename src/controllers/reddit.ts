@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import axios, { AxiosResponse } from "axios";
 import Snoowrap from "snoowrap";
-import { appConfig } from "../constants";
+import { appConfig, fbConfig } from "../constants";
 import nodeHtmlToImage from "node-html-to-image";
 import { getHtml } from "../utils/common";
 
@@ -67,7 +67,7 @@ const getPostsBySubreddit = async (
   next: NextFunction
 ) => {
   const posts = await r
-    .getSubreddit("india")
+    .getSubreddit("nepal")
     .getHot()
     .then((res) => {
       const filtered = res
@@ -95,14 +95,15 @@ const getPostsBySubreddit = async (
     });
   // console.log(posts);
 
-  const post = posts[1];
+  const post = posts[0];
 
   nodeHtmlToImage({
     output: "./images/dynamic.png",
     html: getHtml({
       author: post.author,
       subreddit: post.subreddit,
-      thumbnail: "https://www.iconpacks.net/icons/2/free-reddit-logo-icon-2436-thumb.png",
+      thumbnail:
+        "https://www.iconpacks.net/icons/2/free-reddit-logo-icon-2436-thumb.png",
       upvotes: post.ups,
       num_comments: post.num_comments,
       title: post.title,
@@ -140,13 +141,13 @@ const getPostsBySubreddit = async (
   });
 };
 
-// getting a single post
-const getPost = async (req: Request, res: Response, next: NextFunction) => {
+// postImage
+const postImage = async (req: Request, res: Response, next: NextFunction) => {
   // get the post id from the req
   let id: string = req.params.id;
   // get the post
   let result: AxiosResponse = await axios.get(
-    `https://jsonplaceholder.typicode.com/posts/${id}`
+    `https://graph.facebook.com/v14.0/5955314741169402?fields=id,username&access_token=${fbConfig.accessToken}`
   );
   let post: Post = result.data;
   return res.status(200).json({
@@ -154,5 +155,29 @@ const getPost = async (req: Request, res: Response, next: NextFunction) => {
   });
 };
 
-export default { getPosts, getPost, getPostsBySubreddit, createImage };
+// getting a single post
+const getPost = async (req: Request, res: Response, next: NextFunction) => {
+  // get the post id from the req
+  let id: string = req.params.id;
+  // get the post
+  try {
+    let result: AxiosResponse = await axios.get(
+      `https://jsonplaceholder.typicode.com/posts/${id}`
+    );
+    let post: Post = result.data;
+  } catch (e: any) {
+    console.log(e.response.data);
+  }
+  return res.status(200).json({
+    message: "response",
+  });
+};
+
+export default {
+  getPosts,
+  getPost,
+  getPostsBySubreddit,
+  createImage,
+  postImage,
+};
 //
