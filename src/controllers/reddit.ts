@@ -73,7 +73,7 @@ const getPostsBySubreddit = async (
       const filtered = res
         .filter((item) => {
           return (
-            item.title.length < 280 &&
+            item.title.length < 560 &&
             item.title[item.title.length - 1] === "?" &&
             item.num_comments > 25
           );
@@ -95,7 +95,7 @@ const getPostsBySubreddit = async (
     });
   // console.log(posts);
 
-  const post = posts[0];
+  const post = posts[1];
 
   nodeHtmlToImage({
     output: "./images/dynamic.png",

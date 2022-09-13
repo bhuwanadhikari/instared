@@ -32,29 +32,25 @@ export const getHtml = ({
       body {
         padding: 0;
         margin: 0;
-        width: 540px;
-        height: 540px;
-        background-color: antiquewhite;
-  
+        width: 1620px;
+        height: 1620px;
       }
   
       .main {
-        // zoom: 3;
-        background-color: grey;
-        // padding: 48px;
+        zoom: 3;
         width: 540px;
         height: 540px;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        background-color: black;
       }
-  
+      
       .main-container {
         display: flex;
+        padding: 48px;
         flex-direction: column;
-        /* justify-content: center; */
         gap: 24px;
-        background-color: green;
         width: 100%;
       }
   
