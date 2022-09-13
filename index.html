@@ -15,19 +15,25 @@
       width: 1620px;
       height: 1620px;
       background-color: antiquewhite;
-     
+      /* display: table; */
     }
 
     .main {
       zoom: 3;
-      background-color: black;
+      background-color: grey;
       padding: 48px;
       width: 540px;
       height: 540px;
-      display: flex;
+      display: table;
+
+    }
+
+    .main-container {
+      /* display: flex;
       flex-direction: column;
-      justify-content: center;
-      gap: 24px;
+      /* justify-content: center; */
+      display: table-cell;
+      vertical-align: middle;
     }
 
     .header {
@@ -53,7 +59,7 @@
     }
 
     .post-title {
-      width: calc( 540px - 48px );
+      width: calc(540px - 48px);
       word-wrap: break-word;
     }
 
@@ -88,32 +94,33 @@
 
 <body>
   <div class="main">
-    <div class="header">
+    <div class="main-container">
+      <div class="header">
 
-      <div class="image-box">
-        <img src="https://styles.redditmedia.com/t5_2qs6h/styles/communityIcon_znptuoshgmc61.png" alt="">
-      </div>
-      <div class="header-right">
-        <div class="subreddit">
-          r/Nepal
+        <div class="image-box">
+          <img src=${thumbnail} alt="">
         </div>
-        <div class="author">
-          Posted by u/Sushilkdl
+        <div class="header-right">
+          <div class="subreddit">
+            r/${subreddit.display_name}
+          </div>
+          <div class="author">
+            Posted by u/${author.name}
+          </div>
         </div>
       </div>
-    </div>
-    <div class="post-title">
-      I am not against VIP Travel, but given the road condition and Traffic that thousands of people suffer, it isn't
-      such a good idea. Maybe if some foreign diplomats are visiting Nepal, Sure why not? Let's give them respect.
-    </div>
-    <div class="footer">
-      <div class="upvotes">
-        <i class="material-icons upvote-icon">file_upload</i>
-        <div>1.2k</div>
+      <div class="post-title">
+        ${title}
       </div>
-      <div class="comments">
-        <i class="material-icons comment-icon">mode_comment</i>
-        <div>1.2k</div>
+      <div class="footer">
+        <div class="upvotes">
+          <i class="material-icons upvote-icon">file_upload</i>
+          <div>${upvotes}</div>
+        </div>
+        <div class="comments">
+          <i class="material-icons comment-icon">mode_comment</i>
+          <div>${num_comments}</div>
+        </div>
       </div>
     </div>
   </div>

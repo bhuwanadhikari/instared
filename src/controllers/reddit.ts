@@ -51,10 +51,10 @@ const createImage = async (req: Request, res: Response, next: NextFunction) => {
 
   //     return filtered;
   //   });
-  nodeHtmlToImage({
-    output: "./images/image.png",
-    html: getHtml(),
-  }).then(() => console.log("The imagesd was created successfully!"));
+  // nodeHtmlToImage({
+  //   output: "./images/image.png",
+  //   html: getHtml(),
+  // }).then(() => console.log("The imagesd was created successfully!"));
 
   return res.status(200).json({
     message: "created",
@@ -67,8 +67,8 @@ const getPostsBySubreddit = async (
   next: NextFunction
 ) => {
   const posts = await r
-    .getSubreddit("nepal")
-    .getTop()
+    .getSubreddit("india")
+    .getHot()
     .then((res) => {
       const filtered = res
         .filter((item) => {
@@ -79,41 +79,64 @@ const getPostsBySubreddit = async (
           );
         })
         .map((item) => {
-          return { title: item.title, id: item.id, comments: [] };
+          console.log(item);
+          return {
+            subreddit: item.subreddit,
+            title: item.title,
+            id: item.id,
+            comments: [],
+            ups: item.ups,
+            author: item.author,
+            num_comments: item.num_comments,
+          };
         });
 
       return filtered;
     });
-  console.log(posts);
+  // console.log(posts);
 
-  const ccc: any =
-    // for (let post of posts) {
-    await r
-      .getSubmission(posts[0].id)
-      .expandReplies({ limit: Infinity, depth: 1 })
-      .then(({ author, subreddit, title, ups, num_comments, comments }) => {
-        return {
-          author,
-          subreddit,
-          title,
-          ups,
-          num_comments,
-          comments: comments
-            .filter((c) => c.body.length < 280 && c.ups > 10)
-            .map(({ author, ups, body }) => ({
-              author,
-              ups,
-              body,
-            })),
-        };
-      });
+  const post = posts[0];
+
+  nodeHtmlToImage({
+    output: "./images/dynamic.png",
+    html: getHtml({
+      author: post.author,
+      subreddit: post.subreddit,
+      thumbnail: "https://www.iconpacks.net/icons/2/free-reddit-logo-icon-2436-thumb.png",
+      upvotes: post.ups,
+      num_comments: post.num_comments,
+      title: post.title,
+    }),
+  }).then(() => console.log("The imagesd was created successfully!"));
+
+  // const ccc: any =
+  // for (let post of posts) {
+  // await r
+  //   .getSubmission(posts[0].id)
+  //   .expandReplies({ limit: Infinity, depth: 1 })
+  //   .then(({ author, subreddit, title, ups, num_comments, comments }) => {
+  //     return {
+  //       author,
+  //       subreddit,
+  //       title,
+  //       ups,
+  //       num_comments,
+  //       comments: comments
+  //         .filter((c) => c.body.length < 280 && c.ups > 10)
+  //         .map(({ author, ups, body }) => ({
+  //           author,
+  //           ups,
+  //           body,
+  //         })),
+  //     };
+  //   });
   // }
 
-  console.log(ccc);
+  // console.log(ccc);
   // let result: AxiosResponse = await axios.post(``);
   // let posts: [Post] = result.data;
   return res.status(200).json({
-    message: ccc,
+    message: posts[0],
   });
 };
 

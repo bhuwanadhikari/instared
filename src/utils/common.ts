@@ -1,5 +1,25 @@
-export const getHtml = () => {
+import { RedditUser, Subreddit } from "snoowrap";
+
+export type GetHtmlArgs = {
+  subreddit: Subreddit;
+  author: RedditUser;
+  thumbnail: string;
+  title: string;
+  num_comments: number;
+  upvotes: number;
+};
+
+export const getHtml = ({
+  subreddit,
+  author,
+  title,
+  num_comments,
+  upvotes,
+  thumbnail,
+}: GetHtmlArgs) => {
+  console.log(subreddit);
   return `<html>
+
   <head>
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <style>
@@ -12,22 +32,30 @@ export const getHtml = () => {
       body {
         padding: 0;
         margin: 0;
-        width: 1620px;
-        height: 1620px;
+        width: 540px;
+        height: 540px;
         background-color: antiquewhite;
-        display: flex;
-        align-items: center;
+  
       }
   
       .main {
-        zoom: 3;
-        background-color: black;
-        padding: 48px;
+        // zoom: 3;
+        background-color: grey;
+        // padding: 48px;
         width: 540px;
         height: 540px;
         display: flex;
         flex-direction: column;
+        justify-content: center;
+      }
+  
+      .main-container {
+        display: flex;
+        flex-direction: column;
+        /* justify-content: center; */
         gap: 24px;
+        background-color: green;
+        width: 100%;
       }
   
       .header {
@@ -53,10 +81,10 @@ export const getHtml = () => {
       }
   
       .post-title {
-        width: calc( 540px - 96px );
+        width: calc(540px - 48px);
         word-wrap: break-word;
       }
-
+  
       .footer {
         display: flex;
         align-items: center;
@@ -88,32 +116,33 @@ export const getHtml = () => {
   
   <body>
     <div class="main">
-      <div class="header">
+      <div class="main-container">
+        <div class="header">
   
-        <div class="image-box">
-          <img src="https://styles.redditmedia.com/t5_2qs6h/styles/communityIcon_znptuoshgmc61.png" alt="">
-        </div>
-        <div class="header-right">
-          <div class="subreddit">
-            r/Nepal
+          <div class="image-box">
+            <img src=${thumbnail} alt="">
           </div>
-          <div class="author">
-            Posted by u/Sushilkdl
+          <div class="header-right">
+            <div class="subreddit">
+              r/${subreddit.display_name}
+            </div>
+            <div class="author">
+              Posted by u/${author.name}
+            </div>
           </div>
         </div>
-      </div>
-      <div class="post-title">
-        I am not against VIP Travel, but given the road condition and Traffic that thousands of people suffer, it isn't
-        such a good idea. Maybe if some foreign diplomats are visiting Nepal, Sure why not? Let's give them respect.
-      </div>
-      <div class="footer">
-        <div class="upvotes">
-          <i class="material-icons upvote-icon">file_upload</i>
-          <div>1.2k</div>
+        <div class="post-title">
+          ${title}
         </div>
-        <div class="comments">
-          <i class="material-icons comment-icon">mode_comment</i>
-          <div>1.2k</div>
+        <div class="footer">
+          <div class="upvotes">
+            <i class="material-icons upvote-icon">file_upload</i>
+            <div>${upvotes}</div>
+          </div>
+          <div class="comments">
+            <i class="material-icons comment-icon">mode_comment</i>
+            <div>${num_comments}</div>
+          </div>
         </div>
       </div>
     </div>
