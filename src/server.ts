@@ -3,6 +3,7 @@ import express, { Express } from "express";
 import morgan from "morgan";
 import postRoutes from "./routes/posts";
 import redditRoutes from "./routes/reddit";
+import instaRoutes from "./routes/insta";
 
 const router: Express = express();
 
@@ -32,6 +33,7 @@ router.use((req, res, next) => {
 
 /** Routes */
 router.use("/reddit/", redditRoutes);
+router.use("/instagram/", instaRoutes);
 router.use("/posts/", postRoutes);
 
 /** Error handling */
