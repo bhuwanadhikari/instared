@@ -13,16 +13,36 @@ const instagramClient = new Instagram({
   api_version: fbConfig.apiVersion,
 });
 
-router.get("/rate_limit", async (req: Request, res: Response) => {
+router.get("/rate-limit", async (req: Request, res: Response) => {
   instagramClient
     .getContentPublishingLimit({ fields: ["quota_usage"] })
     .then((res) => {
       console.log(res.data);
     })
     .catch((e) => {
-      console.log('error')
+      console.log("error");
       console.log(e.response.data);
     });
+
+  return res.status(200).json({
+    message: "response",
+  });
+});
+router.get("/make-post", async (req: Request, res: Response) => {
+  try {
+    const result = await instagramClient.makeCarouselAndPost({
+      resources: [
+        { url: "https://i.imgur.com/9haZlr6.jpeg", type: "IMAGE" },
+        { url: "https://i.imgur.com/GU0VQ8k.jpeg", type: "IMAGE" },
+        { url: "https://i.imgur.com/gIwvSR7.jpeg", type: "IMAGE" },
+        { url: "https://i.imgur.com/08tUopH.jpeg", type: "IMAGE" },
+      ],
+      caption: "This is the caption #reddit #nepal",
+    });
+    return res.json({ result });
+  } catch (e) {
+    return res.json({ error: e });
+  }
 
   return res.status(200).json({
     message: "response",

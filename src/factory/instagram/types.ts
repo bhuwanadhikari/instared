@@ -11,3 +11,7 @@ export type InstagramConfig = {
 export type ContentPublishingLimitResponseFields = {
   fields: ("quota_usage" | "rate_limit_settings")[];
 };
+
+export type InstagramContainerId = string;
+
+export type CarouselItem = {};
