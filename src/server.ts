@@ -4,6 +4,7 @@ import morgan from "morgan";
 import postRoutes from "./routes/posts";
 import redditRoutes from "./routes/reddit";
 import instaRoutes from "./routes/insta";
+import imgurRoutes from "./routes/imgur";
 
 const router: Express = express();
 
@@ -35,6 +36,7 @@ router.use((req, res, next) => {
 router.use("/reddit/", redditRoutes);
 router.use("/instagram/", instaRoutes);
 router.use("/posts/", postRoutes);
+router.use("/imgur/", imgurRoutes);
 
 /** Error handling */
 router.use((req, res, next) => {
