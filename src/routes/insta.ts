@@ -32,10 +32,8 @@ router.get("/make-post", async (req: Request, res: Response) => {
   try {
     const result = await instagramClient.makeCarouselAndPost({
       resources: [
-        { url: "https://i.imgur.com/9haZlr6.jpeg", type: "IMAGE" },
-        { url: "https://i.imgur.com/GU0VQ8k.jpeg", type: "IMAGE" },
-        { url: "https://i.imgur.com/gIwvSR7.jpeg", type: "IMAGE" },
-        { url: "https://i.imgur.com/08tUopH.jpeg", type: "IMAGE" },
+        { url: "https://i.imgur.com/XitZ1XW.png", type: "IMAGE" },
+        { url: "https://i.imgur.com/XitZ1XW.png", type: "IMAGE" },
       ],
       caption: "This is the caption #reddit #nepal",
     });

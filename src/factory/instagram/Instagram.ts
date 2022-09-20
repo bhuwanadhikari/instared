@@ -5,6 +5,8 @@ import {
   InstagramContainerId,
 } from "./types";
 
+// TODO: CONVERT EVERYTHING TO CAMEL CASE
+
 class Instagram {
   readonly base_url: string;
   readonly api_version: string;
