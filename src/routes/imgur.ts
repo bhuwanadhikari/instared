@@ -20,21 +20,17 @@ const imgurClient = new Imgur({
 
 router.get("/upload", async (req: Request, res: Response) => {
   try {
-    const formData = new FormData();
-
-    formData.append(
-      "image",
-      fs.createReadStream("/Users/bhuwanadhikari/Downloads/mountains.png")
-    );
-    formData.append(
-      "image",
-      fs.createReadStream("/Users/bhuwanadhikari/Downloads/infoicon.png")
-    );
     const result = await imgurClient.uploadImages({
-      imageFormData: formData,
+      imagePaths: [
+        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/dynamic.png",
+        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+      ],
     });
     return res.status(200).json({
-      message: result.data,
+      message: result.map((r: any) => {
+        console.log(r.data);
+        return r.data;
+      }),
     });
   } catch (e: any) {
     console.log(e);

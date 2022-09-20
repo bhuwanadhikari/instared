@@ -48,12 +48,30 @@ class Imgur {
   //   });
   // }
 
-  async uploadImages({ imageFormData }: { imageFormData: FormData }) {
+  // async uploadImage({ imageFormData }: { imageFormData: FormData }) {
+  //   return await this.invoke({
+  //     method: "POST",
+  //     url: "/upload",
+  //     data: imageFormData,
+  //   });
+  // }
+
+  async uploadImage({ imagePath }: { imagePath: string }) {
+    const formData = new FormData();
+    formData.append("image", fs.createReadStream(imagePath)); //absolute path
     return await this.invoke({
       method: "POST",
       url: "/upload",
-      data: imageFormData,
+      data: formData,
     });
+  }
+
+  async uploadImages({ imagePaths }: { imagePaths: string[] }) {
+    return await Promise.all(
+      imagePaths.map((imagePath) => {
+        return this.uploadImage({ imagePath });
+      })
+    );
   }
 }
 
