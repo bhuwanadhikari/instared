@@ -107,6 +107,7 @@ class Instagram {
     const carousel_items: string[] = [];
     console.log("creating carousel item");
     try {
+      // TODO: convert to promise.all
       for (let resource of resources) {
         const carouselItemRes =
           resource.type === "IMAGE"

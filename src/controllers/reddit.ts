@@ -98,7 +98,7 @@ const getPostsBySubreddit = async (
   const post = posts[0];
 
   nodeHtmlToImage({
-    output: "./images/dynamic.png",
+    output: `./images/${post.id}.png`,
     html: getHtml({
       author: post.author,
       subreddit: post.subreddit,

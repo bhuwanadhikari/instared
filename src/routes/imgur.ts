@@ -24,6 +24,14 @@ router.get("/upload", async (req: Request, res: Response) => {
       imagePaths: [
         "/Users/bhuwanadhikari/Documents/learns/instareddit/images/dynamic.png",
         "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
       ],
     });
     return res.status(200).json({
