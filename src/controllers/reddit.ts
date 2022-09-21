@@ -1,16 +1,16 @@
 import { Request, Response, NextFunction } from "express";
 import axios, { AxiosResponse } from "axios";
 import Snoowrap from "snoowrap";
-import { redditConfgi, fbConfig } from "../constants";
+import { redditConfig, fbConfig } from "../constants";
 import nodeHtmlToImage from "node-html-to-image";
 import { getHtml } from "../utils/common";
 
 const r = new Snoowrap({
   userAgent: "whatever",
-  username: redditConfgi.username,
-  clientId: redditConfgi.clientId,
-  clientSecret: redditConfgi.clientSecret,
-  password: redditConfgi.password,
+  username: redditConfig.username,
+  clientId: redditConfig.clientId,
+  clientSecret: redditConfig.clientSecret,
+  password: redditConfig.password,
 });
 
 interface Post {
