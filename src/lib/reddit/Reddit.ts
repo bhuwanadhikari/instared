@@ -1,11 +1,26 @@
 import Snoowrap, { Submission } from "snoowrap";
 import { RedditConfig } from "./types";
 
-async function promisify<T>(callback: Promise<T>): Promise<T> {
-  return new Promise((resolve, reject) => {
-    callback.then((a) => resolve(a)).catch((b) => reject(b));
-  });
-}
+const unpromise = async <T>(promise: Promise<T>) => {
+  const result = await promise;
+  return result as Omit<T, "then" | "catch" | "finally">;
+};
+
+const makeTree: any = (bush: never | any) => {
+  const obj: any = {
+    body: bush.body,
+    ups: bush.ups,
+    replies: [],
+  };
+
+  for (let reply of bush.replies) {
+    if (reply.ups > 20) {
+      const rrs: any = makeTree(reply);
+      obj.replies.push(rrs);
+    }
+  }
+  return obj;
+};
 
 class Reddit {
   readonly redditClient;
@@ -18,6 +33,7 @@ class Reddit {
       clientSecret: redditClientConfig.clientSecret,
       password: redditClientConfig.password,
     });
+    this.redditClient.config({ requestDelay: 1000 });
   }
 
   async getCuratedPost({ subreddit }: { subreddit: string }) {
@@ -31,10 +47,22 @@ class Reddit {
   }
 
   async makeCarouselData({ postId }: { postId: string }) {
-    const post = await this.redditClient
-      .getSubmission("xl1ot8")
-      .expandReplies({ limit: 1, depth: 1 });
-    return post.author;
+    const post = await unpromise<Submission>(
+      this.redditClient
+        .getSubmission("xkfie5")
+        .expandReplies({ limit: Infinity, depth: 2 })
+    );
+
+    const commentsTree = [];
+    console.log();
+    const tree = [];
+    for (let c of post.comments) {
+      c.ups > 100 && tree.push(makeTree(c));
+    }
+
+    console.log(tree);
+
+    return tree;
     //get comments
     // const comments = await  Promise.all(topPosts.map((post)=> ))
   }
