@@ -6,8 +6,8 @@ import FormData from "form-data";
 import fs from "fs";
 
 import controller from "../controllers/reddit";
-import Imgur from "../factory/imgur/Imgur";
-import Instagram from "../factory/instagram/Instagram";
+import Imgur from "../lib/imgur/Imgur";
+import Instagram from "../lib/instagram/Instagram";
 import { AxiosResponse } from "axios";
 const router = express.Router();
 

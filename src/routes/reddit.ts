@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { redditConfig } from "../constants";
 import controller from "../controllers/reddit";
-import Reddit from "../factory/reddit/Reddit";
+import Reddit from "../lib/reddit/Reddit";
 const router = express.Router();
 
 const reddit = new Reddit({
@@ -22,17 +22,19 @@ router.get("/post-image", controller.postImage);
 router.get("/post-image", controller.postImage);
 
 router.get("/make-data", async (req: Request, res: Response) => {
-  try {
-    const data = await reddit.makeCarouselData({ subreddit: "nepal" });
-    return res.json({
-      data: data,
-    });
-  } catch (e) {
-    console.log(e);
-    return res.json({
-      data: "error",
-    });
-  }
+  // try {
+  //   const data = await reddit.getCuratedPost({ subreddit: "nepal" });
+  //   return res.json({
+  //     data: data,
+  //   });
+  // } catch (e) {
+  //   console.log(e);
+  //   return res.json({
+  //     data: "error",
+  //   });
+  // }
+  const data = await reddit.makeCarouselData({ postId: "random" });
+  return res.json({ data: data });
 });
 
 export = router;

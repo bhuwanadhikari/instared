@@ -3,7 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import { fbConfig } from "../constants";
 
 import controller from "../controllers/reddit";
-import Instagram from "../factory/instagram/Instagram";
+import Instagram from "../lib/instagram/Instagram";
 const router = express.Router();
 
 const instagramClient = new Instagram({
