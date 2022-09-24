@@ -34,7 +34,7 @@ router.get("/make-data", async (req: Request, res: Response) => {
   //   });
   // }
   const data = await reddit.makeCarouselData({ postId: "random" });
-  return res.json({ comments: data });
+  return res.json({ ...data });
 });
 
 export = router;

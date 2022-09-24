@@ -2,20 +2,15 @@ import Snoowrap, { Submission } from "snoowrap";
 import { localPost } from "./post.comments";
 import { RedditConfig } from "./types";
 
-const maxDepth = 2;
-const maxLimit = 2;
+const MAX_LIMIT = 2;
+const MAX_CHARACTER_LENGTH = 540;
 
 const unpromise = async <T>(promise: Promise<T>) => {
   const result = await promise;
   return result as Omit<T, "then" | "catch" | "finally">;
 };
 
-const interactionScore = (instance:any)=> {
-  if(instance.replies){
-    instance.ups + instance.replies[0].ups+instance.replies[1].ups
-  }
- return instance.ups
-}
+
 
 const treeMaker = (comment: any) => {
   // assign depth to be zero for every comment
@@ -33,18 +28,17 @@ const makeTree: any = (bush: any, depth: number) => {
     depth: bush.depth,
     score: bush.score,
     downs: bush.downs,
+    replies: [],
   };
 
   if (bush.depth >= 1) return obj;
 
-  const sortedReplies = bush.replies.sort(
-    (a: any, b: any) => b.score - a.score
-  );
+  const sortedReplies = bush.replies.sort((a: any, b: any) => b.ups - a.ups);
 
   for (let [index, reply] of sortedReplies.entries()) {
     const rrs: any = makeTree(reply, depth);
-    obj.replies = [...(obj.replies || []), rrs];
-    if (index >= maxLimit - 1) break;
+    obj.replies.push(rrs);
+    if (index >= MAX_LIMIT - 1) break;
   }
   return obj;
 };
@@ -90,27 +84,93 @@ class Reddit {
   async makeCarouselData({ postId }: { postId: string }) {
     // const post = await unpromise<Submission>(
     //   this.redditClient
-    //     .getSubmission("xkfie5")
+    //     .getSubmission("xm0qsb")
     //     .expandReplies({ limit: Infinity, depth: 2 })
     // );
 
-    const trimmedTree = [];
-
     //sort the comments by upvotes
-    const sorted = localPost.comments.sort((a, b) => b.score - a.score);
-    //loop on sorted comments
-    for (let c of sorted) {
-      // console.log(c);
+    // localPost.comments.sort((a: any, b: any) => b.ups - a.ups);
+
+    const trimmedTree = [];
+    /**
+     * trim the whole tree only with required fields and
+     * dont take any except parent, child1 and child2
+     */
+    for (let c of localPost.comments) {
       trimmedTree.push(treeMaker(c));
     }
 
-    // console.log(trimmedTree);
+    //remove if any deleted or large text sizes
+    const filtered = trimmedTree.filter((a) => {
+      if (
+        a.body === "[deleted]" ||
+        a[0]?.body === "[deleted]" ||
+        a[1]?.body === "[deleted]"
+      ) {
+        return false;
+      }
+      return true;
+    });
 
-    trimmedTree.sort((a, b)=> a.)
+    // final sorting based on the total points of self and child
+    filtered.sort((a, b) => {
+      // return b.ups - a.ups;
+      const sumRightPoints =
+        b.ups +
+        Number(b.replies?.length) +
+        Number(b[0]?.ups) +
+        Number(b[1]?.ups);
+      const sumLeftPoints =
+        a.ups +
+        Number(a.replies?.length) +
+        Number(a[0]?.ups) +
+        Number(a[1]?.ups);
 
-    return trimmedTree;
-    //get comments
-    // const comments = await  Promise.all(topPosts.map((post)=> ))
+      return sumRightPoints - sumLeftPoints;
+    });
+
+    // remake date based on length of characters of replies
+    const cleaned = filtered.reduce((prev, curr) => {
+      // make array of length of characters [parent, child1, child2]
+      const lengthArr = [
+        Number(curr.body?.length || 0),
+        Number(curr.replies[0]?.body?.length || 0),
+        Number(curr.replies[1]?.body?.length || 0),
+      ];
+
+      // calculate sum length each combined
+      const axy = lengthArr[0] + lengthArr[1] + lengthArr[2]; // of all three
+      const ax = lengthArr[0] + lengthArr[1]; // of parent and child 1
+      const ay = lengthArr[0] + lengthArr[1] + lengthArr[2]; // of parent and child 2
+      const a = lengthArr[0]; // of just parent
+
+      // total length is less than max character limit
+      if (axy < MAX_CHARACTER_LENGTH) {
+        return [...prev, curr];
+      } else {
+        // if total length exceeds, choose only of children
+        // take first child if sum length of parent and child1 is less than max
+        if (ax < MAX_CHARACTER_LENGTH) {
+          return [...prev, { ...curr, replies: curr.replies.slice(0, 1) }];
+        }
+        // take second child sum length of parent and child2 is less than max
+        if (ay < MAX_CHARACTER_LENGTH) {
+          return [...prev, { ...curr, replies: curr.replies.slice(1, 1) }];
+        }
+        // take only parent if parent alone's length is less than max length
+        if (a < MAX_CHARACTER_LENGTH) {
+          return [...prev, { ...curr, replies: undefined }];
+        }
+      }
+      /**
+       * rejected in given condition
+       * - if parent's length exceeds max limit
+       * - if parent's + (child1's or child2's ) exceeds max limit
+       */
+      return prev;
+    }, []);
+
+    return cleaned.slice(0, 9);
   }
 
   async generateCarouselImages() {
