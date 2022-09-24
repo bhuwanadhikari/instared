@@ -1,16 +1,18 @@
 import Snoowrap, { Submission } from "snoowrap";
 import { localPost } from "./post.comments";
-import { RedditConfig } from "./types";
+import { RComment, RedditConfig } from "./types";
+import nodeHtmlToImage from "node-html-to-image";
+import { getCommentsHtml } from "../../utils/commentsHtml";
 
 const MAX_LIMIT = 2;
 const MAX_CHARACTER_LENGTH = 540;
+
+//TODO : ERROR HANDLING IS FULLY REMAINING
 
 const unpromise = async <T>(promise: Promise<T>) => {
   const result = await promise;
   return result as Omit<T, "then" | "catch" | "finally">;
 };
-
-
 
 const treeMaker = (comment: any) => {
   // assign depth to be zero for every comment
@@ -19,7 +21,9 @@ const treeMaker = (comment: any) => {
   return makeTree(comment, depth);
 };
 
+//makes trimmed tree
 const makeTree: any = (bush: any, depth: number) => {
+  //take only required fields
   const obj: any = {
     author: bush.author,
     body: bush.body,
@@ -33,26 +37,14 @@ const makeTree: any = (bush: any, depth: number) => {
 
   if (bush.depth >= 1) return obj;
 
+  // sort children of a parent by upvotes
   const sortedReplies = bush.replies.sort((a: any, b: any) => b.ups - a.ups);
 
+  // loop to trim
   for (let [index, reply] of sortedReplies.entries()) {
     const rrs: any = makeTree(reply, depth);
     obj.replies.push(rrs);
     if (index >= MAX_LIMIT - 1) break;
-  }
-  return obj;
-};
-
-const makeTree2: any = (bush: any, depth: number) => {
-  const obj: any = {
-    body: bush.body,
-    ups: bush.ups,
-    replies: [],
-  };
-  const sortedReplies = bush.replies.sort((a: any, b: any) => b.ups - a.ups);
-  for (let reply of sortedReplies) {
-    const rrs: any = makeTree(reply);
-    obj.replies.push(rrs);
   }
   return obj;
 };
@@ -114,7 +106,6 @@ class Reddit {
 
     // final sorting based on the total points of self and child
     filtered.sort((a, b) => {
-      // return b.ups - a.ups;
       const sumRightPoints =
         b.ups +
         Number(b.replies?.length) +
@@ -129,9 +120,9 @@ class Reddit {
       return sumRightPoints - sumLeftPoints;
     });
 
-    // remake date based on length of characters of replies
+    // remake data based on length of characters of replies
     const cleaned = filtered.reduce((prev, curr) => {
-      // make array of length of characters [parent, child1, child2]
+      // make array of length of characters in the body [parent, child1, child2]
       const lengthArr = [
         Number(curr.body?.length || 0),
         Number(curr.replies[0]?.body?.length || 0),
@@ -170,12 +161,28 @@ class Reddit {
       return prev;
     }, []);
 
+    // we only need 10 carousel items, 1 the original post and 9 comments
     return cleaned.slice(0, 9);
   }
 
-  async generateCarouselImages() {
-    //get post with title and body and create image
-    //create comments images
+  async generateCommentImage(comment: RComment, rank: number) {
+    await nodeHtmlToImage({
+      output: `./images/carousel_${rank}.png`,
+      html: getCommentsHtml({
+        author: comment.author,
+        thumbnail:
+          "https://cdn4.iconfinder.com/data/icons/social-messaging-ui-color-shapes-2-free/128/social-reddit-circle-512.png",
+        upvotes: comment.ups,
+        num_replies: comment.num_replies,
+        body: comment.body,
+      }),
+    });
+  }
+
+  async generateCommentsCarouselImages(comments: RComment[]) {
+    for (let [i, comment] of comments.entries()) {
+      await this.generateCommentImage(comment, i);
+    }
   }
 }
 

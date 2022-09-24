@@ -1,23 +1,20 @@
 import { RedditUser, Subreddit } from "snoowrap";
 
-export type GetHtmlArgs = {
-  subreddit: Subreddit;
+export type GetCommentsHtmlArgs = {
   author: RedditUser;
   thumbnail: string;
-  title: string;
-  num_comments: number;
+  body: string;
+  num_replies: number;
   upvotes: number;
 };
 
-export const getHtml = ({
-  subreddit,
+export const getCommentsHtml = ({
   author,
-  title,
-  num_comments,
+  body,
+  num_replies,
   upvotes,
   thumbnail,
-}: GetHtmlArgs) => {
-  console.log(subreddit);
+}: GetCommentsHtmlArgs) => {
   return `<html>
 
   <head>
@@ -160,7 +157,7 @@ export const getHtml = ({
           <div class="header">
             <div class="image-box">
               <img
-                src="https://cdn4.iconfinder.com/data/icons/social-messaging-ui-color-shapes-2-free/128/social-reddit-circle-512.png"
+                src=${thumbnail}
                 alt="">
             </div>
             <div class="header-right">
@@ -170,8 +167,7 @@ export const getHtml = ({
             </div>
           </div>
           <div class="main-text-body">
-            Being charged a "convenience fee\" for the \"honor\" of being able to pay a bill by phone or online. Uhm -
-            really? I have to PAY you to PAY you??
+            ${body}
           </div>
           <div class="footer">
             <div class="upvotes">
@@ -180,7 +176,7 @@ export const getHtml = ({
             </div>
             <div class="comments">
               <i class="material-icons comment-icon">mode_comment</i>
-              <div>${num_comments}</div>
+              <div>${num_replies}</div>
             </div>
           </div>
         </div>
@@ -194,7 +190,7 @@ export const getHtml = ({
           <div class="header">
             <div class="image-box">
               <img
-                src="https://cdn4.iconfinder.com/data/icons/social-messaging-ui-color-shapes-2-free/128/social-reddit-circle-512.png"
+                src=${thumbnail}
                 alt="">
             </div>
             <div class="header-right">
@@ -214,7 +210,7 @@ export const getHtml = ({
             </div>
             <div class="comments">
               <i class="material-icons comment-icon">mode_comment</i>
-              <div>${num_comments}</div>
+              <div>${num_replies}</div>
             </div>
           </div>
         </div>

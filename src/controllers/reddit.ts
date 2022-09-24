@@ -97,7 +97,7 @@ const getPostsBySubreddit = async (
 
   const post = posts[0];
 
-  nodeHtmlToImage({
+  await nodeHtmlToImage({
     output: `./images/${post.id}.png`,
     html: getHtml({
       author: post.author,
@@ -108,7 +108,7 @@ const getPostsBySubreddit = async (
       num_comments: post.num_comments,
       title: post.title,
     }),
-  }).then(() => console.log("The imagesd was created successfully!"));
+  })
 
   // const ccc: any =
   // for (let post of posts) {
