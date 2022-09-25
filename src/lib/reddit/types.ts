@@ -10,6 +10,18 @@ export type RedditConfig = {
   };
 };
 
+export type RPost = {
+  thumbnail: string;
+  author: any;
+  title: string;
+  selftext: string;
+  ups: number;
+  downs: number;
+  subreddit: string;
+  numComments: number;
+  comments: RComment[];
+};
+
 export type RComment = {
   author: string;
   body: string;

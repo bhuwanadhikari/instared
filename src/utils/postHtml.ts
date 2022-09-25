@@ -1,0 +1,167 @@
+import { RedditUser, Subreddit } from "snoowrap";
+import { RComment, RPost } from "../lib/reddit/types";
+
+export const getPostHtml = ({
+  thumbnail,
+  author,
+  subreddit,
+  title,
+  numComments,
+  selftext,
+  ups,
+  downs,
+}: RPost) => {
+  const hasSelftext = Boolean(selftext);
+  /*html*/
+  return `<html>
+
+  <head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+      * {
+        font-family: Arial, Helvetica, sans-serif;
+        color: white;
+        line-height: 1.2rem;
+        font-size: 1rem;
+      }
+  
+      body {
+        padding: 0;
+        margin: 0;
+        width: 1200px;
+        height: 1500px;
+        background-color: antiquewhite;
+        /* display: table; */
+      }
+  
+      .post-container {
+        zoom: 3;
+        background-color: #111;
+        padding: 24px;
+        width: 400px;
+        height: 500px;
+        box-sizing: border-box;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+      }
+  
+      .main {}
+  
+  
+      .main>.main-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 6px;
+      }
+  
+      .header {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+  
+      .image-box>img {
+        width: 32px;
+        height: 32px;
+        border-radius: 12px;
+      }
+  
+      .header-right {
+        display: flex;
+        flex-direction: column;
+        /* gap: 4px; */
+        /* line-height: 0.1rem; */
+      }
+  
+  
+  
+      .author,
+      .subreddit {
+        color: #bbb;
+        font-size: 0.7rem;
+      }
+  
+      .main-text-title {
+        font-size: 1.05rem;
+        padding-bottom: 8px;
+        border-bottom: 1px solid silver;
+      }
+  
+  
+      .main-text-selftext {}
+  
+      .footer {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+  
+      .upvotes {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+  
+      .comments {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+  
+      .upvote-icon {
+        color: #ff8303;
+      }
+  
+      .comment-icon {
+        font-size: 1.2em;
+        color: silver
+      }
+    </style>
+  </head>
+  
+  <body>
+    <div class="post-container">
+      <div class="main">
+        <div class="main-container">
+          <div class="header">
+            <div class="image-box">
+              <img src=${thumbnail} alt="">
+            </div>
+            <div class="header-right">
+              <div class="subreddit">
+                r/${subreddit}
+              </div>
+              <div class="author">
+                by u/${author}
+              </div>
+            </div>
+          </div>
+          <div class="main-text-title">
+            ${title} 
+          </div>
+          <div class="main-text-selftext">
+            ${selftext}  
+          </div>
+          <div class="footer">
+            <div class="upvotes">
+              <i class="material-icons upvote-icon">file_upload</i>
+              <div>${ups}</div>
+            </div>
+            <div class="comments">
+              <i class="material-icons comment-icon">mode_comment</i>
+              <div>${numComments}</div>
+            </div>
+          </div>
+        </div>
+  
+      </div>
+  
+    </div>
+  </body>
+  
+  </html>`;
+};

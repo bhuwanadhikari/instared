@@ -35,43 +35,12 @@
 
     .main {}
 
-    .children {
-      background-color: #121212;
-      display: flex;
-      flex-direction: row;
-    }
 
     .main>.main-container {
       display: flex;
       flex-direction: column;
       justify-content: center;
       gap: 6px;
-    }
-
-
-
-    .children>.children-container {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 6px
-    }
-
-    .reply-bar-box {
-      height: 100%;
-      width: 24px;
-      /* background-color: red; */
-    }
-
-    .reply-bar-box>.bar {
-      height: 100%;
-      width: 2px;
-      margin: 0 11px;
-      background-color: silver;
-    }
-
-    .table-row {
-      display: table-row;
     }
 
     .header {
@@ -81,29 +50,34 @@
     }
 
     .image-box>img {
-      width: 24px;
-      height: 24px;
+      width: 32px;
+      height: 32px;
       border-radius: 12px;
     }
 
     .header-right {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      /* gap: 4px; */
+      /* line-height: 0.1rem; */
     }
 
-    .author {
+
+
+    .author,
+    .subreddit {
       color: #bbb;
       font-size: 0.7rem;
     }
 
-    .main-text-body {
-      /* width: calc(540px - 24px); */
+    .main-text-title {
+      font-size: 1.05rem;
+      padding-bottom: 8px;
+      border-bottom: 1px solid silver;
     }
 
-    .children-text-body {
-      /* width: calc(540px - 24px); */
-    }
+
+    .main-text-selftext {}
 
     .footer {
       display: flex;
@@ -143,13 +117,21 @@
             <img src=${thumbnail} alt="">
           </div>
           <div class="header-right">
+            <div class="subreddit">
+              r/${subreddit}
+            </div>
             <div class="author">
               by u/${author}
             </div>
           </div>
         </div>
-        <div class="main-text-body">
-          ${body}
+        <div class="main-text-title">
+          "He can safely dodge the interpol if he flees to Taiwan since it is one of the few places where interpol has
+          no jurisdiction, others being places like North Korea where he can't go due to obvious reasons."
+        </div>
+        <div class="main-text-selftext">
+          "He can safely dodge the interpol if he flees to Taiwan since it is one of the few places where interpol has
+          no jurisdiction, others being places like North Korea where he can't go due to obvious reasons."
         </div>
         <div class="footer">
           <div class="upvotes">
@@ -163,37 +145,6 @@
         </div>
       </div>
 
-    </div>
-    <div class="children">
-      <div class="reply-bar-box">
-        <div class="bar"></div>
-      </div>
-
-      <div class="children-container">
-        <div class="header">
-          <div class="image-box">
-            <img src=${thumbnail} alt="">
-          </div>
-          <div class="header-right">
-            <div class="author">
-              by u/${reply.author}
-            </div>
-          </div>
-        </div>
-        <div class="children-text-body">
-          ${reply.body}
-        </div>
-        <div class="footer">
-          <div class="upvotes">
-            <i class="material-icons upvote-icon">file_upload</i>
-            <div>${reply.ups}</div>
-          </div>
-          <div class="comments">
-            <i class="material-icons comment-icon">mode_comment</i>
-            <div>${reply.num_replies}</div>
-          </div>
-        </div>
-      </div>
     </div>
 
   </div>

@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import { redditConfig } from "../constants";
 import controller from "../controllers/reddit";
 import Reddit from "../lib/reddit/Reddit";
-import { RComment } from "../lib/reddit/types";
+import { RComment, RPost } from "../lib/reddit/types";
 const router = express.Router();
 
 const reddit = new Reddit({
@@ -23,39 +23,13 @@ router.get("/post-image", controller.postImage);
 router.get("/post-image", controller.postImage);
 
 router.get("/make-data", async (req: Request, res: Response) => {
-  // try {
-  //   const data = await reddit.getCuratedPost({ subreddit: "nepal" });
-  //   return res.json({
-  //     data: data,
-  //   });
-  // } catch (e) {
-  //   console.log(e);
-  //   return res.json({
-  //     data: "error",
-  //   });
-  // }
-  const data: RComment[] = await reddit.makeCarouselData({ postId: "random" });
-  // await reddit.generateCommentsCarouselImages(data);
+  const data: any = await reddit.makeCarouselData({ postId: "xm0qsb" });
   return res.json({ data: data });
 });
-
 
 router.get("/make-images", async (req: Request, res: Response) => {
-  // try {
-  //   const data = await reddit.getCuratedPost({ subreddit: "nepal" });
-  //   return res.json({
-  //     data: data,
-  //   });
-  // } catch (e) {
-  //   console.log(e);
-  //   return res.json({
-  //     data: "error",
-  //   });
-  // }
-  const data: RComment[] = await reddit.makeCarouselData({ postId: "random" });
-  await reddit.generateCommentsCarouselImages(data);
-  return res.json({ data: data });
+  const response = await reddit.generateCarouselImages({ postId: "xm0qsb" });
+  return res.json({ message: "might have been successful" });
 });
-
 
 export = router;

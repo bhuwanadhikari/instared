@@ -66,78 +66,14 @@ const getPostsBySubreddit = async (
   res: Response,
   next: NextFunction
 ) => {
-  const posts = await r
-    .getSubreddit("nepal")
-    .getHot()
-    .then((res) => {
-      const filtered = res
-        .filter((item) => {
-          return (
-            item.title.length < 560 &&
-            item.title[item.title.length - 1] === "?" &&
-            item.num_comments > 25
-          );
-        })
-        .map((item) => {
-          console.log(item);
-          return {
-            subreddit: item.subreddit,
-            title: item.title,
-            id: item.id,
-            comments: [],
-            ups: item.ups,
-            author: item.author,
-            num_comments: item.num_comments,
-          };
-        });
+  const posts = await r.getSubreddit("nepal").getHot();
 
-      return filtered;
-    });
   // console.log(posts);
 
   const post = posts[0];
 
-  await nodeHtmlToImage({
-    output: `./images/${post.id}.png`,
-    html: getHtml({
-      author: post.author,
-      subreddit: post.subreddit,
-      thumbnail:
-        "https://www.iconpacks.net/icons/2/free-reddit-logo-icon-2436-thumb.png",
-      upvotes: post.ups,
-      num_comments: post.num_comments,
-      title: post.title,
-    }),
-  })
-
-  // const ccc: any =
-  // for (let post of posts) {
-  // await r
-  //   .getSubmission(posts[0].id)
-  //   .expandReplies({ limit: Infinity, depth: 1 })
-  //   .then(({ author, subreddit, title, ups, num_comments, comments }) => {
-  //     return {
-  //       author,
-  //       subreddit,
-  //       title,
-  //       ups,
-  //       num_comments,
-  //       comments: comments
-  //         .filter((c) => c.body.length < 280 && c.ups > 10)
-  //         .map(({ author, ups, body }) => ({
-  //           author,
-  //           ups,
-  //           body,
-  //         })),
-  //     };
-  //   });
-  // }
-
-  // console.log(ccc);
-  // let result: AxiosResponse = await axios.post(``);
-  // let posts: [Post] = result.data;
   return res.status(200).json({
-    message: posts[0],
+    message: posts,
   });
 };
 
