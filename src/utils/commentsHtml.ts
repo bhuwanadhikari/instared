@@ -1,20 +1,21 @@
 import { RedditUser, Subreddit } from "snoowrap";
-
-export type GetCommentsHtmlArgs = {
-  author: RedditUser;
-  thumbnail: string;
-  body: string;
-  num_replies: number;
-  upvotes: number;
-};
+import { RComment } from "../lib/reddit/types";
 
 export const getCommentsHtml = ({
   author,
   body,
   num_replies,
-  upvotes,
+  replies,
+  ups,
   thumbnail,
-}: GetCommentsHtmlArgs) => {
+}: RComment) => {
+  console.log();
+  let reply;
+  if (replies && replies.length > 0) {
+    reply = replies[0];
+  }
+
+  /*html*/
   return `<html>
 
   <head>
@@ -62,7 +63,7 @@ export const getCommentsHtml = ({
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: 8px;
+        gap: 6px;
       }
   
   
@@ -71,7 +72,7 @@ export const getCommentsHtml = ({
         display: flex;
         flex-direction: column;
         justify-content: center;
-        gap: 8px
+        gap: 6px
       }
   
       .reply-bar-box {
@@ -111,6 +112,7 @@ export const getCommentsHtml = ({
   
       .author {
         color: #bbb;
+        font-size: 0.7rem;
       }
   
       .main-text-body {
@@ -162,7 +164,7 @@ export const getCommentsHtml = ({
             </div>
             <div class="header-right">
               <div class="author">
-                by u/${author.name}
+                by u/${author}
               </div>
             </div>
           </div>
@@ -172,7 +174,7 @@ export const getCommentsHtml = ({
           <div class="footer">
             <div class="upvotes">
               <i class="material-icons upvote-icon">file_upload</i>
-              <div>${upvotes}</div>
+              <div>${ups}</div>
             </div>
             <div class="comments">
               <i class="material-icons comment-icon">mode_comment</i>
@@ -180,7 +182,10 @@ export const getCommentsHtml = ({
             </div>
           </div>
         </div>
-      </div>
+      ${
+        /*html*/
+        reply
+          ? `</div>
       <div class="children">
         <div class="reply-bar-box">
           <div class="bar"></div>
@@ -195,27 +200,28 @@ export const getCommentsHtml = ({
             </div>
             <div class="header-right">
               <div class="author">
-                by u/${author.name}
+                by u/${reply.author}
               </div>
             </div>
           </div>
           <div class="children-text-body">
-            Being charged a "convenience fee\" for the \"honor\" of being able to pay a bill by phone or online. Uhm -
-            really? I have to PAY you to PAY you??
+           ${reply.body}
           </div>
           <div class="footer">
             <div class="upvotes">
               <i class="material-icons upvote-icon">file_upload</i>
-              <div>${upvotes}</div>
+              <div>${reply.ups}</div>
             </div>
             <div class="comments">
               <i class="material-icons comment-icon">mode_comment</i>
-              <div>${num_replies}</div>
+              <div>${reply.num_replies}</div>
             </div>
           </div>
         </div>
       </div>
-  
+  `
+          : ""
+      }
     </div>
   </body>
   

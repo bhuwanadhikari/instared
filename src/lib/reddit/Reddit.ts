@@ -26,6 +26,8 @@ const makeTree: any = (bush: any, depth: number) => {
   //take only required fields
   const obj: any = {
     author: bush.author,
+    thumbnail:
+      "https://seeklogo.com/images/R/reddit-logo-23F13F6A6A-seeklogo.com.png",
     body: bush.body,
     ups: bush.ups,
     num_replies: bush.replies.length,
@@ -168,21 +170,18 @@ class Reddit {
   async generateCommentImage(comment: RComment, rank: number) {
     await nodeHtmlToImage({
       output: `./images/carousel_${rank}.png`,
-      html: getCommentsHtml({
-        author: comment.author,
-        thumbnail:
-          "https://cdn4.iconfinder.com/data/icons/social-messaging-ui-color-shapes-2-free/128/social-reddit-circle-512.png",
-        upvotes: comment.ups,
-        num_replies: comment.num_replies,
-        body: comment.body,
-      }),
+      html: getCommentsHtml(comment),
     });
   }
 
   async generateCommentsCarouselImages(comments: RComment[]) {
-    for (let [i, comment] of comments.entries()) {
-      await this.generateCommentImage(comment, i);
-    }
+    await Promise.all(
+      comments.map((comment, i) => this.generateCommentImage(comment, i))
+    );
+
+    // for (let [i, comment] of comments.entries()) {
+    //   await this.generateCommentImage(comment, i);
+    // }
   }
 }
 

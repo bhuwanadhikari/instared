@@ -11,12 +11,13 @@ export type RedditConfig = {
 };
 
 export type RComment = {
-  author: RedditUser;
+  author: string;
   body: string;
   ups: number;
   num_replies: number;
   depth: number;
   score: number;
+  thumbnail: string;
   downs: number;
   replies: RComment[];
 };
