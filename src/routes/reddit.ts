@@ -28,8 +28,14 @@ router.get("/make-data", async (req: Request, res: Response) => {
 });
 
 router.get("/make-images", async (req: Request, res: Response) => {
-  const response = await reddit.generateCarouselImages({ postId: "xm0qsb" });
-  return res.json({ message: "might have been successful" });
+  try {
+    const response = await reddit.generateCarouselImages({ postId: "xm0qsb" });
+    return res.json({ message: "might have been successful" });
+  } catch (e) {
+    return res.status(500).json({
+      message: "error",
+    });
+  }
 });
 
 export = router;

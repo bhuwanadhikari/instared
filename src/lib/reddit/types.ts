@@ -12,7 +12,7 @@ export type RedditConfig = {
 
 export type RPost = {
   thumbnail: string;
-  author: any;
+  author: string;
   title: string;
   selftext: string;
   ups: number;

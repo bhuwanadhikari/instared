@@ -175,7 +175,7 @@ class Reddit {
 
     const usablePost = {
       thumbnail: redditConfig.redditLogoUrl,
-      author: post.author,
+      author: post.author.name,
       title: post.title,
       selftext: post.selftext,
       subreddit: post.subreddit?.display_name,
@@ -212,11 +212,17 @@ class Reddit {
   }
 
   async generateCarouselImages({ postId }: { postId: string }) {
-    const post = await this.makeCarouselData({ postId });
-    await Promise.all([
-      () => this.generateCommentsCarouselImages(post.comments),
-      () => this.generatePostImage(post),
-    ]);
+    try {
+      const post = await this.makeCarouselData({ postId });
+      console.log("made post");
+      await Promise.all([
+        this.generateCommentsCarouselImages(post.comments),
+        this.generatePostImage(post),
+      ]);
+      console.log("made images");
+    } catch (e) {
+      throw e;
+    }
   }
 }
 

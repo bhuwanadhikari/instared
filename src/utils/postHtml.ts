@@ -83,17 +83,18 @@ export const getPostHtml = ({
       .subreddit {
         color: #bbb;
         font-size: 0.7rem;
+        line-height: 0.8rem;
       }
   
+
       .main-text-title {
         font-size: 1.05rem;
-        padding-bottom: 8px;
-        border-bottom: 1px solid silver;
       }
-  
-  
-      .main-text-selftext {}
-  
+
+      .main-text-selftext {
+        padding-top: 6px;
+        border-top: 1px solid silver;
+      }
       .footer {
         display: flex;
         align-items: center;
@@ -143,9 +144,12 @@ export const getPostHtml = ({
           <div class="main-text-title">
             ${title} 
           </div>
-          <div class="main-text-selftext">
-            ${selftext}  
-          </div>
+          ${
+            /*html*/
+            hasSelftext
+              ? `<div class="main-text-selftext">${selftext}</div>`
+              : ``
+          }
           <div class="footer">
             <div class="upvotes">
               <i class="material-icons upvote-icon">file_upload</i>
