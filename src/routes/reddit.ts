@@ -22,6 +22,11 @@ router.get("/create-image", controller.createImage);
 router.get("/post-image", controller.postImage);
 router.get("/post-image", controller.postImage);
 
+router.get("/curated-posts", async (req: Request, res: Response) => {
+  const data: any = await reddit.getCuratedPost({ subreddit: "nepal" });
+  return res.json({ data: data });
+});
+
 router.get("/make-data", async (req: Request, res: Response) => {
   const data: any = await reddit.makeCarouselData({ postId: "xm0qsb" });
   return res.json({ data: data });
@@ -29,10 +34,10 @@ router.get("/make-data", async (req: Request, res: Response) => {
 
 router.get("/make-images", async (req: Request, res: Response) => {
   try {
-    const response = await reddit.generateCarouselImages({ postId: "xm0qsb" });
+    const response = await reddit.generateCarouselImages({ postId: "xo9jl3" });
     return res.json({ message: "might have been successful" });
   } catch (e) {
-    return res.status(500).json({
+    return res.status(400).json({
       message: "error",
     });
   }

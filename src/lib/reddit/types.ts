@@ -11,6 +11,8 @@ export type RedditConfig = {
 };
 
 export type RPost = {
+  id: string;
+  name: string;
   thumbnail: string;
   author: string;
   title: string;
@@ -27,6 +29,7 @@ export type RComment = {
   body: string;
   ups: number;
   num_replies: number;
+  postId: string;
   depth: number;
   score: number;
   thumbnail: string;

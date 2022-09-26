@@ -6,8 +6,10 @@ import { getCommentsHtml } from "../../utils/commentsHtml";
 import { redditConfig } from "../../constants";
 import { getPostHtml } from "../../utils/postHtml";
 
-const MAX_LIMIT = 2;
-const MAX_CHARACTER_LENGTH = 540;
+export const MAX_REPLIES_LIMIT = 2;
+export const MAX_CHARACTER_LENGTH = 560;
+export const MAX_LENGTH_OF_POST_TITLE = 300;
+export const MAX_LENGTH_OF_POST_SELFTEXT = 300;
 
 //TODO : ERROR HANDLING IS FULLY REMAINING
 
@@ -27,7 +29,7 @@ const treeMaker = (comment: any) => {
 const makeTree: any = (bush: any, depth: number) => {
   //take only required fields
   const obj: any = {
-    author: bush.author,
+    author: bush.author.name,
     thumbnail:
       "https://seeklogo.com/images/R/reddit-logo-23F13F6A6A-seeklogo.com.png",
     body: bush.body,
@@ -35,6 +37,7 @@ const makeTree: any = (bush: any, depth: number) => {
     num_replies: bush.replies.length,
     depth: bush.depth,
     score: bush.score,
+    postId: bush.parent_id, //used for just folder
     downs: bush.downs,
     replies: [],
   };
@@ -48,7 +51,7 @@ const makeTree: any = (bush: any, depth: number) => {
   for (let [index, reply] of sortedReplies.entries()) {
     const rrs: any = makeTree(reply, depth);
     obj.replies.push(rrs);
-    if (index >= MAX_LIMIT - 1) break;
+    if (index >= MAX_REPLIES_LIMIT - 1) break;
   }
   return obj;
 };
@@ -69,21 +72,72 @@ class Reddit {
 
   async getCuratedPost({ subreddit }: { subreddit: string }) {
     //get top posts
-    const topPosts = await this.redditClient.getSubreddit(subreddit).getTop();
+    const topPosts = await this.redditClient
+      .getSubreddit(subreddit)
+      .getTop({ time: "day" });
 
-    //get comments
-    // const comments = await  Promise.all(topPosts.map((post)=> ))
+    const filteredTopPosts: any = topPosts.reduce((prev: any[], post) => {
+      const hasEnoughComments = post.num_comments >= 5;
+      const isImageFree = !Boolean(post.preview?.images);
+      const isVideoFree = !post.is_video;
 
-    return topPosts.sort((a, b) => b.num_comments - a.num_comments);
+      //filter by char length
+      let acceptableByCharLength = false;
+      let titleAndSelftextShowable = true;
+      const titleLength = post.title.length;
+      const selftextLength = post.selftext.length;
+      const totalLength = titleLength + selftextLength;
+
+      /**
+       * accepted both if total length is less than max
+       * accepted only selfttext if total exceeds max but selftext doesnt
+       */
+      if (totalLength <= MAX_CHARACTER_LENGTH) {
+        acceptableByCharLength = true;
+        titleAndSelftextShowable = true;
+      } else if (
+        selftextLength <= MAX_CHARACTER_LENGTH &&
+        totalLength > MAX_CHARACTER_LENGTH
+      ) {
+        acceptableByCharLength = true;
+        titleAndSelftextShowable = false;
+      }
+
+      if (
+        hasEnoughComments &&
+        isImageFree &&
+        isVideoFree &&
+        acceptableByCharLength
+      ) {
+        return [
+          ...prev,
+          {
+            id: post.id,
+            author: post.author.name,
+            selftext: post.selftext,
+            title: post.title,
+            ups: post.ups,
+            numComments: post.num_comments,
+            titleAndSelftextShowable,
+          },
+        ];
+      } else {
+        return prev;
+      }
+    }, []);
+
+    return filteredTopPosts.sort(
+      (a: any, b: any) => b.numComments - a.numComments
+    );
   }
 
   async makeCarouselData({ postId }: { postId: string }): Promise<RPost> {
-    // const post = await unpromise<Submission>(
-    //   this.redditClient
-    //     .getSubmission(postId)
-    //     .expandReplies({ limit: Infinity, depth: 2 })
-    // );
-    const post = localPost;
+    const post = await unpromise<Submission>(
+      this.redditClient
+        .getSubmission(postId)
+        .expandReplies({ limit: Infinity, depth: 2 })
+    );
+    // const post = localPost;
 
     // remove configs and etc from the response
     //@ts-ignore
@@ -130,56 +184,57 @@ class Reddit {
     });
 
     // remake data based on length of characters of replies
-    const cleanedAfterTakingTwoReplies = filteredByDeleted.reduce(
-      (prev, curr) => {
-        // make array of length of characters in the body [parent, child1, child2]
-        const lengthArr = [
-          Number(curr.body?.length || 0),
-          Number(curr.replies[0]?.body?.length || 0),
-          Number(curr.replies[1]?.body?.length || 0),
-        ];
+    const dataBasedOnCharLength = filteredByDeleted.reduce((prev, curr) => {
+      // make array of length of characters in the body [parent, child1, child2]
+      const lengthArr = [
+        Number(curr.body?.length || 0),
+        Number(curr.replies[0]?.body?.length || 0),
+        Number(curr.replies[1]?.body?.length || 0),
+      ];
 
-        // calculate sum length each combined
-        const axy = lengthArr[0] + lengthArr[1] + lengthArr[2]; // of all three
-        const ax = lengthArr[0] + lengthArr[1]; // of parent and child 1
-        const ay = lengthArr[0] + lengthArr[1] + lengthArr[2]; // of parent and child 2
-        const a = lengthArr[0]; // of just parent
+      // calculate sum length each combined
+      const axy = lengthArr[0] + lengthArr[1] + lengthArr[2]; // of all three
+      const ax = lengthArr[0] + lengthArr[1]; // of parent and child 1
+      const ay = lengthArr[0] + lengthArr[1] + lengthArr[2]; // of parent and child 2
+      const a = lengthArr[0]; // of just parent
 
-        // total length is less than max character limit
-        if (axy < MAX_CHARACTER_LENGTH) {
-          return [...prev, curr];
-        } else {
-          // if total length exceeds, choose only of children
-          // take first child if sum length of parent and child1 is less than max
-          if (ax < MAX_CHARACTER_LENGTH) {
-            return [...prev, { ...curr, replies: curr.replies.slice(0, 1) }];
-          }
-          // take second child sum length of parent and child2 is less than max
-          if (ay < MAX_CHARACTER_LENGTH) {
-            return [...prev, { ...curr, replies: curr.replies.slice(1, 1) }];
-          }
-          // take only parent if parent alone's length is less than max length
-          if (a < MAX_CHARACTER_LENGTH) {
-            return [...prev, { ...curr, replies: undefined }];
-          }
+      // total length is less than max character limit
+      if (axy < MAX_CHARACTER_LENGTH) {
+        return [...prev, curr];
+      } else {
+        // if total length exceeds, choose only of children
+        // take first child if sum length of parent and child1 is less than max
+        if (ax < MAX_CHARACTER_LENGTH) {
+          return [...prev, { ...curr, replies: curr.replies.slice(0, 1) }];
         }
-        /**
-         * rejected in given condition
-         * - if parent's length exceeds max limit
-         * - if parent's + (child1's or child2's ) exceeds max limit
-         */
-        return prev;
-      },
-      []
-    );
+        // take second child sum length of parent and child2 is less than max
+        if (ay < MAX_CHARACTER_LENGTH) {
+          return [...prev, { ...curr, replies: curr.replies.slice(1, 1) }];
+        }
+        // take only parent if parent alone's length is less than max length
+        if (a < MAX_CHARACTER_LENGTH) {
+          return [...prev, { ...curr, replies: undefined }];
+        }
+      }
+      /**
+       * rejected in given condition
+       * - if parent's length exceeds max limit
+       * - if parent's + (child1's or child2's ) exceeds max limit
+       */
+      return prev;
+    }, []);
+
+    // TODO: DON'T POST IF THE NUMBER OF COMMENTS IS LESS THAN 5
 
     const usablePost = {
       thumbnail: redditConfig.redditLogoUrl,
+      id: post.id,
       author: post.author.name,
       title: post.title,
       selftext: post.selftext,
       subreddit: post.subreddit?.display_name,
       ups: post.ups,
+      name: post.name,
       downs: post.downs,
       numComments: post.num_comments,
     };
@@ -187,20 +242,20 @@ class Reddit {
     // we only need 10 carousel items, 1 the original post and 9 comments
     return {
       ...usablePost,
-      comments: cleanedAfterTakingTwoReplies.slice(0, 9),
+      comments: dataBasedOnCharLength.slice(0, 9),
     };
   }
 
   private async generatePostImage(post: RPost) {
     await nodeHtmlToImage({
-      output: `./images/post.png`,
+      output: `./images/${post.name}__carousel_0.png`,
       html: getPostHtml(post),
     });
   }
 
   private async generateCommentImage(comment: RComment, rank: number) {
     await nodeHtmlToImage({
-      output: `./images/carousel_${rank}.png`,
+      output: `./images/${comment.postId}__carousel_${rank + 1}.png`,
       html: getCommentsHtml(comment),
     });
   }
