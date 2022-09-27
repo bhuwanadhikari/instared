@@ -1,10 +1,36 @@
 import http from "http";
-import express, { Express } from "express";
+import express, { Express, Request, Response } from "express";
 import morgan from "morgan";
 import postRoutes from "./routes/posts";
 import redditRoutes from "./routes/reddit";
 import instaRoutes from "./routes/insta";
 import imgurRoutes from "./routes/imgur";
+import Instared from "./lib/instared/Instared";
+import { fbConfig, imgurConfig, redditConfig } from "./constants";
+
+const instared = new Instared({
+  redditConfig: {
+    redditClientConfig: {
+      userAgent: "the user",
+      username: redditConfig.username,
+      clientId: redditConfig.clientId,
+      clientSecret: redditConfig.clientSecret,
+      password: redditConfig.password,
+    },
+  },
+  imgurConfig: {
+    clientId: imgurConfig.clientId,
+    clientSecret: imgurConfig.clientSecret,
+    baseUrl: imgurConfig.baseUrl,
+    apiVersion: imgurConfig.apiVersion,
+  },
+  instagramConfig: {
+    base_url: fbConfig.graphDomain,
+    access_token: fbConfig.accessToken,
+    instagram_user_id: fbConfig.instagramBusinessId,
+    api_version: fbConfig.apiVersion,
+  },
+});
 
 const router: Express = express();
 
@@ -33,6 +59,11 @@ router.use((req, res, next) => {
 });
 
 /** Routes */
+
+router.use("/instared/do-a-post", async (req: Request, res: Response) => {
+  return res.json({ data: await instared.doAPost({ subreddit: "nepal" }) });
+});
+
 router.use("/reddit/", redditRoutes);
 router.use("/instagram/", instaRoutes);
 router.use("/posts/", postRoutes);

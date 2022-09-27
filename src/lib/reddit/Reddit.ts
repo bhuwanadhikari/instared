@@ -30,8 +30,7 @@ const makeTree: any = (bush: any, depth: number) => {
   //take only required fields
   const obj: any = {
     author: bush.author.name,
-    thumbnail:
-      "https://seeklogo.com/images/R/reddit-logo-23F13F6A6A-seeklogo.com.png",
+    thumbnail: redditConfig.redditLogoUrl,
     body: bush.body,
     ups: bush.ups,
     num_replies: bush.replies.length,
@@ -70,7 +69,7 @@ class Reddit {
     this.redditClient.config({ requestDelay: 1000 });
   }
 
-  async getCuratedPost({ subreddit }: { subreddit: string }) {
+  async getCuratedPosts({ subreddit }: { subreddit: string }) {
     //get top posts
     const topPosts = await this.redditClient
       .getSubreddit(subreddit)
@@ -254,14 +253,14 @@ class Reddit {
   }
 
   private async generateCommentImage(comment: RComment, rank: number) {
-    await nodeHtmlToImage({
+    return await nodeHtmlToImage({
       output: `./images/${comment.postId}__carousel_${rank + 1}.png`,
       html: getCommentsHtml(comment),
     });
   }
 
   private async generateCommentsCarouselImages(comments: RComment[]) {
-    await Promise.all(
+    return await Promise.all(
       comments.map((comment, i) => this.generateCommentImage(comment, i))
     );
   }
@@ -274,7 +273,6 @@ class Reddit {
         this.generateCommentsCarouselImages(post.comments),
         this.generatePostImage(post),
       ]);
-      console.log("made images");
     } catch (e) {
       throw e;
     }

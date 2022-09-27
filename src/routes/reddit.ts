@@ -23,7 +23,7 @@ router.get("/post-image", controller.postImage);
 router.get("/post-image", controller.postImage);
 
 router.get("/curated-posts", async (req: Request, res: Response) => {
-  const data: any = await reddit.getCuratedPost({ subreddit: "nepal" });
+  const data: any = await reddit.getCuratedPosts({ subreddit: "nepal" });
   return res.json({ data: data });
 });
 
