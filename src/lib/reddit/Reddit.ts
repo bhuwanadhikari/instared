@@ -70,209 +70,243 @@ class Reddit {
   }
 
   async getCuratedPosts({ subreddit }: { subreddit: string }) {
-    //get top posts
-    const topPosts = await this.redditClient
-      .getSubreddit(subreddit)
-      .getTop({ time: "day" });
+    try {
+      //get top posts
+      const topPosts = await this.redditClient
+        .getSubreddit(subreddit)
+        .getTop({ time: "day" });
 
-    const filteredTopPosts: any = topPosts.reduce((prev: any[], post) => {
-      const hasEnoughComments = post.num_comments >= 5;
-      const isImageFree = !Boolean(post.preview?.images);
-      const isVideoFree = !post.is_video;
+      const filteredTopPosts: any = topPosts.reduce((prev: any[], post) => {
+        const hasEnoughComments = post.num_comments >= 5;
+        const isImageFree = !Boolean(post.preview?.images);
+        const isVideoFree = !post.is_video;
 
-      //filter by char length
-      let acceptableByCharLength = false;
-      let titleAndSelftextShowable = true;
-      const titleLength = post.title.length;
-      const selftextLength = post.selftext.length;
-      const totalLength = titleLength + selftextLength;
+        //filter by char length
+        let acceptableByCharLength = false;
+        let titleAndSelftextShowable = true;
+        const titleLength = post.title.length;
+        const selftextLength = post.selftext.length;
+        const totalLength = titleLength + selftextLength;
 
-      /**
-       * accepted both if total length is less than max
-       * accepted only selfttext if total exceeds max but selftext doesnt
-       */
-      if (totalLength <= MAX_CHARACTER_LENGTH) {
-        acceptableByCharLength = true;
-        titleAndSelftextShowable = true;
-      } else if (
-        selftextLength <= MAX_CHARACTER_LENGTH &&
-        totalLength > MAX_CHARACTER_LENGTH
-      ) {
-        acceptableByCharLength = true;
-        titleAndSelftextShowable = false;
-      }
+        /**
+         * accepted both if total length is less than max
+         * accepted only selfttext if total exceeds max but selftext doesnt
+         */
+        if (totalLength <= MAX_CHARACTER_LENGTH) {
+          acceptableByCharLength = true;
+          titleAndSelftextShowable = true;
+        } else if (
+          selftextLength <= MAX_CHARACTER_LENGTH &&
+          totalLength > MAX_CHARACTER_LENGTH
+        ) {
+          acceptableByCharLength = true;
+          titleAndSelftextShowable = false;
+        }
 
-      if (
-        hasEnoughComments &&
-        isImageFree &&
-        isVideoFree &&
-        acceptableByCharLength
-      ) {
-        return [
-          ...prev,
-          {
-            id: post.id,
-            author: post.author.name,
-            selftext: post.selftext,
-            title: post.title,
-            ups: post.ups,
-            numComments: post.num_comments,
-            titleAndSelftextShowable,
-          },
-        ];
-      } else {
-        return prev;
-      }
-    }, []);
+        if (
+          hasEnoughComments &&
+          isImageFree &&
+          isVideoFree &&
+          acceptableByCharLength
+        ) {
+          return [
+            ...prev,
+            {
+              id: post.id,
+              author: post.author.name,
+              selftext: post.selftext,
+              title: post.title,
+              ups: post.ups,
+              numComments: post.num_comments,
+              titleAndSelftextShowable,
+            },
+          ];
+        } else {
+          return prev;
+        }
+      }, []);
 
-    return filteredTopPosts.sort(
-      (a: any, b: any) => b.numComments - a.numComments
-    );
+      return filteredTopPosts.sort(
+        (a: any, b: any) => b.numComments - a.numComments
+      );
+    } catch (e) {
+      throw e;
+    }
   }
 
   async makeCarouselData({ postId }: { postId: string }): Promise<RPost> {
-    const post = await unpromise<Submission>(
-      this.redditClient
-        .getSubmission(postId)
-        .expandReplies({ limit: Infinity, depth: 2 })
-    );
-    // const post = localPost;
+    try {
+      const post = await unpromise<Submission>(
+        this.redditClient
+          .getSubmission(postId)
+          .expandReplies({ limit: Infinity, depth: 2 })
+      );
+      // const post = localPost;
 
-    // remove configs and etc from the response
-    //@ts-ignore
-    post._r = undefined;
+      // remove configs and etc from the response
+      //@ts-ignore
+      post._r = undefined;
 
-    //sort the comments by upvotes
-    // post.comments.sort((a: any, b: any) => b.ups - a.ups);
+      //sort the comments by upvotes
+      // post.comments.sort((a: any, b: any) => b.ups - a.ups);
 
-    const trimmedTree = [];
-    /**
-     * trim the whole tree only with required fields and
-     * dont take any except parent, child1 and child2
-     */
-    for (let c of post.comments) {
-      trimmedTree.push(treeMaker(c));
-    }
-
-    //remove if any deleted or large text sizes
-    const filteredByDeleted = trimmedTree.filter((a) => {
-      if (
-        a.body === "[deleted]" ||
-        a[0]?.body === "[deleted]" ||
-        a[1]?.body === "[deleted]"
-      ) {
-        return false;
-      }
-      return true;
-    });
-
-    // final sorting based on the total points of self and child
-    filteredByDeleted.sort((a, b) => {
-      const sumRightPoints =
-        b.ups +
-        Number(b.replies?.length) +
-        Number(b[0]?.ups) +
-        Number(b[1]?.ups);
-      const sumLeftPoints =
-        a.ups +
-        Number(a.replies?.length) +
-        Number(a[0]?.ups) +
-        Number(a[1]?.ups);
-
-      return sumRightPoints - sumLeftPoints;
-    });
-
-    // remake data based on length of characters of replies
-    const dataBasedOnCharLength = filteredByDeleted.reduce((prev, curr) => {
-      // make array of length of characters in the body [parent, child1, child2]
-      const lengthArr = [
-        Number(curr.body?.length || 0),
-        Number(curr.replies[0]?.body?.length || 0),
-        Number(curr.replies[1]?.body?.length || 0),
-      ];
-
-      // calculate sum length each combined
-      const axy = lengthArr[0] + lengthArr[1] + lengthArr[2]; // of all three
-      const ax = lengthArr[0] + lengthArr[1]; // of parent and child 1
-      const ay = lengthArr[0] + lengthArr[1] + lengthArr[2]; // of parent and child 2
-      const a = lengthArr[0]; // of just parent
-
-      // total length is less than max character limit
-      if (axy < MAX_CHARACTER_LENGTH) {
-        return [...prev, curr];
-      } else {
-        // if total length exceeds, choose only of children
-        // take first child if sum length of parent and child1 is less than max
-        if (ax < MAX_CHARACTER_LENGTH) {
-          return [...prev, { ...curr, replies: curr.replies.slice(0, 1) }];
-        }
-        // take second child sum length of parent and child2 is less than max
-        if (ay < MAX_CHARACTER_LENGTH) {
-          return [...prev, { ...curr, replies: curr.replies.slice(1, 1) }];
-        }
-        // take only parent if parent alone's length is less than max length
-        if (a < MAX_CHARACTER_LENGTH) {
-          return [...prev, { ...curr, replies: undefined }];
-        }
-      }
+      const trimmedTree = [];
       /**
-       * rejected in given condition
-       * - if parent's length exceeds max limit
-       * - if parent's + (child1's or child2's ) exceeds max limit
+       * trim the whole tree only with required fields and
+       * dont take any except parent, child1 and child2
        */
-      return prev;
-    }, []);
+      for (let c of post.comments) {
+        trimmedTree.push(treeMaker(c));
+      }
 
-    // TODO: DON'T POST IF THE NUMBER OF COMMENTS IS LESS THAN 5
+      //remove if any deleted or large text sizes
+      const filteredByDeleted = trimmedTree.filter((a) => {
+        if (
+          a.body === "[deleted]" ||
+          a[0]?.body === "[deleted]" ||
+          a[1]?.body === "[deleted]"
+        ) {
+          return false;
+        }
+        return true;
+      });
 
-    const usablePost = {
-      thumbnail: redditConfig.redditLogoUrl,
-      id: post.id,
-      author: post.author.name,
-      title: post.title,
-      selftext: post.selftext,
-      subreddit: post.subreddit?.display_name,
-      ups: post.ups,
-      name: post.name,
-      downs: post.downs,
-      numComments: post.num_comments,
-    };
+      // final sorting based on the total points of self and child
+      filteredByDeleted.sort((a, b) => {
+        const sumRightPoints =
+          b.ups +
+          Number(b.replies?.length) +
+          Number(b[0]?.ups) +
+          Number(b[1]?.ups);
+        const sumLeftPoints =
+          a.ups +
+          Number(a.replies?.length) +
+          Number(a[0]?.ups) +
+          Number(a[1]?.ups);
 
-    // we only need 10 carousel items, 1 the original post and 9 comments
-    return {
-      ...usablePost,
-      comments: dataBasedOnCharLength.slice(0, 9),
-    };
+        return sumRightPoints - sumLeftPoints;
+      });
+
+      // remake data based on length of characters of replies
+      const dataBasedOnCharLength = filteredByDeleted.reduce((prev, curr) => {
+        // make array of length of characters in the body [parent, child1, child2]
+        const lengthArr = [
+          Number(curr.body?.length || 0),
+          Number(curr.replies[0]?.body?.length || 0),
+          Number(curr.replies[1]?.body?.length || 0),
+        ];
+
+        // calculate sum length each combined
+        const axy = lengthArr[0] + lengthArr[1] + lengthArr[2]; // of all three
+        const ax = lengthArr[0] + lengthArr[1]; // of parent and child 1
+        const ay = lengthArr[0] + lengthArr[1] + lengthArr[2]; // of parent and child 2
+        const a = lengthArr[0]; // of just parent
+
+        // total length is less than max character limit
+        if (axy < MAX_CHARACTER_LENGTH) {
+          return [...prev, curr];
+        } else {
+          // if total length exceeds, choose only of children
+          // take first child if sum length of parent and child1 is less than max
+          if (ax < MAX_CHARACTER_LENGTH) {
+            return [...prev, { ...curr, replies: curr.replies.slice(0, 1) }];
+          }
+          // take second child sum length of parent and child2 is less than max
+          if (ay < MAX_CHARACTER_LENGTH) {
+            return [...prev, { ...curr, replies: curr.replies.slice(1, 1) }];
+          }
+          // take only parent if parent alone's length is less than max length
+          if (a < MAX_CHARACTER_LENGTH) {
+            return [...prev, { ...curr, replies: undefined }];
+          }
+        }
+        /**
+         * rejected in given condition
+         * - if parent's length exceeds max limit
+         * - if parent's + (child1's or child2's ) exceeds max limit
+         */
+        return prev;
+      }, []);
+
+      // TODO: DON'T POST IF THE NUMBER OF COMMENTS IS LESS THAN 5
+
+      const usablePost = {
+        thumbnail: redditConfig.redditLogoUrl,
+        id: post.id,
+        author: post.author.name,
+        title: post.title,
+        selftext: post.selftext,
+        subreddit: post.subreddit?.display_name,
+        ups: post.ups,
+        name: post.name,
+        downs: post.downs,
+        numComments: post.num_comments,
+      };
+
+      // we only need 10 carousel items, 1 the original post and 9 comments
+      return {
+        ...usablePost,
+        comments: dataBasedOnCharLength.slice(0, 9),
+      };
+    } catch (e) {
+      throw e;
+    }
   }
 
-  private async generatePostImage(post: RPost) {
-    await nodeHtmlToImage({
-      output: `./images/${post.name}__carousel_0.png`,
-      html: getPostHtml(post),
-    });
+  private async generatePostImage(post: RPost): Promise<{ imagePath: string }> {
+    try {
+      const imagePath = `./images/${post.name}__carousel_0.png`;
+
+      await nodeHtmlToImage({
+        output: imagePath,
+        html: getPostHtml(post),
+      });
+      return { imagePath };
+    } catch (e) {
+      throw e;
+    }
   }
 
-  private async generateCommentImage(comment: RComment, rank: number) {
-    return await nodeHtmlToImage({
-      output: `./images/${comment.postId}__carousel_${rank + 1}.png`,
-      html: getCommentsHtml(comment),
-    });
+  // single reusable image generator
+  private async generateCommentImage(
+    comment: RComment,
+    rank: number
+  ): Promise<{ imagePath: string }> {
+    try {
+      const imagePath = `./images/${comment.postId}__carousel_${rank + 1}.png`;
+      await nodeHtmlToImage({
+        output: imagePath,
+        html: getCommentsHtml(comment),
+      });
+      return {
+        imagePath,
+      };
+    } catch (e) {
+      throw e;
+    }
   }
 
+  // 9 images of comments
   private async generateCommentsCarouselImages(comments: RComment[]) {
-    return await Promise.all(
-      comments.map((comment, i) => this.generateCommentImage(comment, i))
-    );
+    try {
+      const commentsImages = await Promise.all(
+        comments.map((comment, i) => this.generateCommentImage(comment, i))
+      );
+      return commentsImages;
+    } catch (e) {
+      throw e;
+    }
   }
 
+  // all the images
   async generateCarouselImages({ postId }: { postId: string }) {
     try {
       const post = await this.makeCarouselData({ postId });
-      console.log("made post");
-      await Promise.all([
-        this.generateCommentsCarouselImages(post.comments),
+      const images = await Promise.all([
         this.generatePostImage(post),
+        this.generateCommentsCarouselImages(post.comments),
       ]);
+      return [images[0], ...images[1]];
     } catch (e) {
       throw e;
     }

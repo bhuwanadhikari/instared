@@ -7,7 +7,7 @@ import instaRoutes from "./routes/insta";
 import imgurRoutes from "./routes/imgur";
 import Instared from "./lib/instared/Instared";
 import { fbConfig, imgurConfig, redditConfig } from "./constants";
-
+import { getAppRootDir } from "./utils/common";
 const instared = new Instared({
   redditConfig: {
     redditClientConfig: {
@@ -61,7 +61,16 @@ router.use((req, res, next) => {
 /** Routes */
 
 router.use("/instared/do-a-post", async (req: Request, res: Response) => {
-  return res.json({ data: await instared.doAPost({ subreddit: "nepal" }) });
+  const payload = await instared.doAPost({
+    subreddit: "nepal",
+    numberOfPosts: 2,
+  });
+
+  
+
+  return res.json({
+    data: payload,
+  });
 });
 
 router.use("/reddit/", redditRoutes);

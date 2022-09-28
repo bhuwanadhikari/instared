@@ -1,3 +1,4 @@
+import { getAppRootDir } from "../../utils/common";
 import Imgur from "../imgur/Imgur";
 import { ImgurConfig } from "../imgur/types";
 import Instagram from "../instagram/Instagram";
@@ -24,14 +25,43 @@ class Instared {
     this.imgur = new Imgur({ ...imgurConfig });
   }
 
-  async doAPost({ subreddit }: { subreddit: string }) {
-    const curatedPosts = await this.reddit.getCuratedPosts({
-      subreddit: subreddit,
-    });
+  async doAPost({
+    subreddit,
+    numberOfPosts,
+  }: {
+    subreddit: string;
+    numberOfPosts: number;
+  }) {
+    try {
+      const curatedPosts = await this.reddit.getCuratedPosts({
+        subreddit: subreddit,
+      });
 
-    for (let post of curatedPosts) {
-      const res = await this.reddit.generateCarouselImages({ postId: post.id });
-      console.log(res);
+      const locallyGeneratedImages = [];
+
+      // image generation
+      for (let i = 0; i < numberOfPosts; i = i + 1) {
+        if (curatedPosts.length === i) break;
+        const aPostImages = await this.reddit.generateCarouselImages({
+          postId: curatedPosts[i].id,
+        });
+        locallyGeneratedImages.push(aPostImages);
+      }
+
+
+      const imgurImages = [];
+      for (let aPostImages of locallyGeneratedImages) {
+        const response = await this.imgur.uploadImages({
+          imagePaths: aPostImages.map(
+            (image) => getAppRootDir() + image.imagePath.slice(1)
+          ),
+        });
+        console.log(response.map((r) => r.data.data));
+      }
+
+      return locallyGeneratedImages;
+    } catch (e) {
+      throw e;
     }
   }
 }

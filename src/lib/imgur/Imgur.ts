@@ -17,32 +17,44 @@ class Imgur {
   }
 
   private async invoke(axiosRequestConfig: AxiosRequestConfig) {
-    axiosRequestConfig.headers = {
-      ...axiosRequestConfig.headers,
-      Authorization: `Client-ID ${this.clientId}`,
-    };
+    try {
+      axiosRequestConfig.headers = {
+        ...axiosRequestConfig.headers,
+        Authorization: `Client-ID ${this.clientId}`,
+      };
 
-    axiosRequestConfig.url = `${this.baseUrl}/${this.apiVersion}${axiosRequestConfig.url}`;
-    console.log(axiosRequestConfig);
-    return axios(axiosRequestConfig);
+      axiosRequestConfig.url = `${this.baseUrl}/${this.apiVersion}${axiosRequestConfig.url}`;
+      return axios(axiosRequestConfig);
+    } catch (e) {
+      throw e;
+    }
   }
 
   async uploadImage({ imagePath }: { imagePath: string }) {
-    const formData = new FormData();
-    formData.append("image", fs.createReadStream(imagePath)); //absolute path
-    return await this.invoke({
-      method: "POST",
-      url: "/upload",
-      data: formData,
-    });
+    try {
+      const formData = new FormData();
+      formData.append("image", fs.createReadStream(imagePath)); //absolute path
+      return await this.invoke({
+        method: "POST",
+        url: "/upload",
+        data: formData,
+      });
+    } catch (e) {
+      throw e;
+    }
   }
 
+  // TODO USE FOR LOOP THAN PROMISE ALL
   async uploadImages({ imagePaths }: { imagePaths: string[] }) {
-    return await Promise.all(
-      imagePaths.map((imagePath) => {
-        return this.uploadImage({ imagePath });
-      })
-    );
+    try {
+      return await Promise.all(
+        imagePaths.map((imagePath) => {
+          return this.uploadImage({ imagePath });
+        })
+      );
+    } catch (e) {
+      throw e;
+    }
   }
 }
 

@@ -3,7 +3,6 @@ import axios, { AxiosResponse } from "axios";
 import Snoowrap from "snoowrap";
 import { redditConfig, fbConfig } from "../constants";
 import nodeHtmlToImage from "node-html-to-image";
-import { getHtml } from "../utils/common";
 
 const r = new Snoowrap({
   userAgent: "whatever",
