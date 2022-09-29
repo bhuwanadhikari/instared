@@ -24,14 +24,15 @@ class Imgur {
       };
 
       axiosRequestConfig.url = `${this.baseUrl}/${this.apiVersion}${axiosRequestConfig.url}`;
-      return axios(axiosRequestConfig);
+      return await axios(axiosRequestConfig);
     } catch (e) {
       throw e;
     }
   }
-
+//
   async uploadImage({ imagePath }: { imagePath: string }) {
     try {
+      console.log("uploading")
       const formData = new FormData();
       formData.append("image", fs.createReadStream(imagePath)); //absolute path
       return await this.invoke({
@@ -47,11 +48,12 @@ class Imgur {
   // TODO USE FOR LOOP THAN PROMISE ALL
   async uploadImages({ imagePaths }: { imagePaths: string[] }) {
     try {
-      return await Promise.all(
-        imagePaths.map((imagePath) => {
-          return this.uploadImage({ imagePath });
-        })
-      );
+      const response = [];
+      for (let imagePath of imagePaths) {
+        response.push((await this.uploadImage({ imagePath })).data.data);
+      }
+
+      return response;
     } catch (e) {
       throw e;
     }

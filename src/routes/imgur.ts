@@ -23,22 +23,19 @@ router.get("/upload", async (req: Request, res: Response) => {
     const result = await imgurClient.uploadImages({
       imagePaths: [
         "/Users/bhuwanadhikari/Documents/learns/instareddit/images/dynamic.png",
-        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
-        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
-        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
-        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
-        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
-        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
-        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
-        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
-        "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        // "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        // "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        // "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        // "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        // "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        // "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        // "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        // "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
+        // "/Users/bhuwanadhikari/Documents/learns/instareddit/images/image.png",
       ],
     });
     return res.status(200).json({
-      message: result.map((r: any) => {
-        console.log(r.data);
-        return r.data;
-      }),
+      message: result,
     });
   } catch (e: any) {
     console.log(e);
