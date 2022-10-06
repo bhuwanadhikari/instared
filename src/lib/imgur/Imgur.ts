@@ -2,6 +2,7 @@ import axios, { Axios, AxiosError, AxiosRequestConfig } from "axios";
 import { ImgurConfig } from "./types";
 import fs from "fs";
 import FormData from "form-data";
+import { delay } from "../../utils/common";
 
 class Imgur {
   readonly baseUrl: string;
@@ -29,10 +30,10 @@ class Imgur {
       throw e;
     }
   }
-//
+  //
   async uploadImage({ imagePath }: { imagePath: string }) {
     try {
-      console.log("uploading")
+      console.log("uploading");
       const formData = new FormData();
       formData.append("image", fs.createReadStream(imagePath)); //absolute path
       return await this.invoke({
@@ -48,12 +49,14 @@ class Imgur {
   // TODO USE FOR LOOP THAN PROMISE ALL
   async uploadImages({ imagePaths }: { imagePaths: string[] }) {
     try {
-      const response = [];
+      const responses: any = [];
       for (let imagePath of imagePaths) {
-        response.push((await this.uploadImage({ imagePath })).data.data);
+        await delay(5000).then(async () =>
+          responses.push((await this.uploadImage({ imagePath })).data.data)
+        );
+        // responses.push((await this.uploadImage({ imagePath })).data.data);
       }
-
-      return response;
+      return responses;
     } catch (e) {
       throw e;
     }

@@ -61,16 +61,20 @@ router.use((req, res, next) => {
 /** Routes */
 
 router.use("/instared/do-a-post", async (req: Request, res: Response) => {
-  const payload = await instared.doAPost({
-    subreddit: "nepal",
-    numberOfPosts: 2,
-  });
+  try {
+    const payload = await instared.doAPost({
+      subreddit: "nepal",
+      numberOfPosts: 2,
+    });
 
-  
+    console.log("THIS IS PAYLAOD", payload);
 
-  return res.json({
-    data: payload,
-  });
+    return res.json({
+      data: payload,
+    });
+  } catch (e) {
+    return { data: "error" };
+  }
 });
 
 router.use("/reddit/", redditRoutes);

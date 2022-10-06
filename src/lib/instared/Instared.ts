@@ -1,3 +1,4 @@
+import { response } from "express";
 import { getAppRootDir } from "../../utils/common";
 import Imgur from "../imgur/Imgur";
 import { ImgurConfig } from "../imgur/types";
@@ -55,10 +56,10 @@ class Instared {
             (image) => getAppRootDir() + image.imagePath.slice(1)
           ),
         });
-        console.log(response);
+        imgurImages.push(response);
       }
-
-      return locallyGeneratedImages;
+      console.log("imgur images here", imgurImages);
+      return imgurImages;
     } catch (e) {
       throw e;
     }

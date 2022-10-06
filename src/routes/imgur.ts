@@ -41,7 +41,7 @@ router.get("/upload", async (req: Request, res: Response) => {
     console.log(e);
     return res.json({ error: e.data });
   }
-});
+}); 
 router.get("/posts/:id", controller.getPost);
 router.get("/moderators/", controller.getPostsBySubreddit);
 router.get("/create-image", controller.createImage);
