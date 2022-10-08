@@ -1,4 +1,5 @@
 import axios, { Axios, AxiosError, AxiosRequestConfig } from "axios";
+import { fbConfig } from "../../constants";
 import {
   ContentPublishingLimitResponseFields,
   InstagramConfig,
@@ -9,25 +10,58 @@ import {
 
 class Instagram {
   readonly base_url: string;
+  readonly clientSecret: string;
+  readonly clientId: string;
+  readonly longLivedToken: string;
   readonly api_version: string;
   readonly access_token: string;
   readonly instagram_business_id: string;
+  readonly grantType = "fb_exchange_token";
 
   constructor(config: InstagramConfig) {
     this.base_url = config.base_url;
     this.api_version = config.api_version;
-    this.access_token = config.access_token;
+    this.access_token = config.access_token; // short lived
     this.instagram_business_id = config.instagram_user_id;
+    this.clientSecret = config.clientSecret;
+    this.clientId = config.clientId;
+    this.longLivedToken = config.longLivedToken;
   }
 
-  private async invoke(axiosRequestConfig: AxiosRequestConfig) {
+  private async invoke(
+    axiosRequestConfig: AxiosRequestConfig,
+    userIdUsed: boolean = true
+  ) {
     axiosRequestConfig.params = {
       ...axiosRequestConfig.params,
-      access_token: this.access_token,
+      access_token: this.longLivedToken,
     };
-    axiosRequestConfig.url = `${this.base_url}/${this.api_version}/${this.instagram_business_id}${axiosRequestConfig.url}`;
+    if (userIdUsed) {
+      axiosRequestConfig.url = `${this.base_url}/${this.api_version}/${this.instagram_business_id}${axiosRequestConfig.url}`;
+    } else {
+      axiosRequestConfig.url = `${this.base_url}/${this.api_version}${axiosRequestConfig.url}`;
+    }
+    console.log(axiosRequestConfig);
     return axios(axiosRequestConfig);
   }
+
+  private async getLongLivedToken() {
+    return await this.invoke(
+      {
+        method: "GET",
+        url: `/oauth/access_token`,
+        params: {
+          grant_type: this.grantType,
+          client_id: this.clientId,
+          client_secret: this.clientSecret,
+          fb_exchange_token: this.access_token,
+        },
+      },
+      false
+    );
+  }
+
+  private async refreshLongLivedToken() {}
 
   async getContentPublishingLimit({
     fields,
@@ -142,7 +176,7 @@ class Instagram {
       return { data: publishRes.data };
     } catch (e: any) {
       console.log(e.type === AxiosError ? e.response : e);
-      return e;
+      throw e;
     }
   }
 }

@@ -1,5 +1,8 @@
 export type InstagramConfig = {
   base_url: string;
+  longLivedToken: string;
+  clientId: string;
+  clientSecret: string;
   api_version: string;
   access_token: string;
   /**

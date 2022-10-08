@@ -29,6 +29,9 @@ const instared = new Instared({
     access_token: fbConfig.accessToken,
     instagram_user_id: fbConfig.instagramBusinessId,
     api_version: fbConfig.apiVersion,
+    clientId: fbConfig.clientId,
+    clientSecret: fbConfig.clientSecret,
+    longLivedToken: fbConfig.longLivedToken,
   },
 });
 

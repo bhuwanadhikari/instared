@@ -11,6 +11,9 @@ const instagramClient = new Instagram({
   access_token: fbConfig.accessToken,
   instagram_user_id: fbConfig.instagramBusinessId,
   api_version: fbConfig.apiVersion,
+  clientId: fbConfig.clientId,
+  clientSecret: fbConfig.clientSecret,
+  longLivedToken: fbConfig.longLivedToken,
 });
 
 router.get("/rate-limit", async (req: Request, res: Response) => {
@@ -28,6 +31,26 @@ router.get("/rate-limit", async (req: Request, res: Response) => {
     message: "response",
   });
 });
+
+// router.get("/access-token", async (req: Request, res: Response) => {
+//   instagramClient
+//     .getLongLivedToken()
+//     .then((results) => {
+//       console.log(results.data);
+//       return res.status(200).json({
+//         data: results.data,
+//       });
+//     })
+//     .catch((e) => {
+//       console.log("error");
+//       console.log(e);
+//       return res.status(200).json({
+//         message: "error",
+//         error: e.response.data
+//       });
+//     });
+// });
+
 router.get("/make-post", async (req: Request, res: Response) => {
   try {
     const result = await instagramClient.makeCarouselAndPost({

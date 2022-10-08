@@ -57,10 +57,20 @@ class Instared {
           ),
         });
         imgurImages.push(response);
+        await this.instagram.makeCarouselAndPost({
+          resources: response.map((image: any) => ({
+            url: image.link,
+            type: "IMAGE",
+          })),
+          caption: "#reddit #redditnepal",
+        });
       }
-      console.log("imgur images here", imgurImages);
-      return imgurImages;
+
+      return {
+        success: true,
+      };
     } catch (e) {
+      console.log(e);
       throw e;
     }
   }
