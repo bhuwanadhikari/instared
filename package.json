@@ -2,9 +2,9 @@
   "name": "instareddit",
   "version": "1.0.0",
   "description": "",
-  "main": "src/server.ts",
+  "main": "src/index.ts",
   "scripts": {
-    "dev": "nodemon src/server.ts",
+    "dev": "nodemon src/index.ts",
     "build": "rm -rf build/ && prettier --write src/ && tsc"
   },
   "keywords": [],

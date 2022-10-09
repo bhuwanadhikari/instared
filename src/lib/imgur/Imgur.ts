@@ -33,20 +33,20 @@ class Imgur {
   //
   async uploadImage({ imagePath }: { imagePath: string }) {
     try {
-      console.log(`uploading to imgur: ${imagePath}`);
       const formData = new FormData();
       formData.append("image", fs.createReadStream(imagePath)); //absolute path
+      console.log(`uploading to imgur: ${imagePath}`);
       return await this.invoke({
         method: "POST",
         url: "/upload",
         data: formData,
       });
     } catch (e) {
+      console.log(e);
       throw e;
     }
   }
 
-  // TODO USE FOR LOOP THAN PROMISE ALL
   async uploadImages({ imagePaths }: { imagePaths: string[] }) {
     try {
       const responses: any = [];
@@ -58,7 +58,8 @@ class Imgur {
       }
       return responses;
     } catch (e) {
-      throw e;
+      console.log(e);
+      // throw e;
     }
   }
 }
