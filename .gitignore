@@ -4,3 +4,4 @@ images/*
 !images/infoicon.png
 token.json
 .env
+build
