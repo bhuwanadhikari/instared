@@ -1,4 +1,5 @@
 import http from "http";
+require("dotenv").config();
 import express, { Express, Request, Response } from "express";
 import morgan from "morgan";
 import postRoutes from "./routes/posts";
@@ -66,8 +67,8 @@ router.use((req, res, next) => {
 router.use("/instared/do-a-post", async (req: Request, res: Response) => {
   try {
     const payload = await instared.doAPost({
-      subreddit: "nepal",
-      numberOfPosts: 2,
+      subreddit: "askmen",
+      numberOfPosts: 1,
     });
 
     console.log("THIS IS PAYLAOD", payload);

@@ -3,3 +3,4 @@ src/constants.ts
 src/lib/reddit/post.comments.ts
 images
 token.json
+.env
