@@ -64,7 +64,7 @@ class Instared {
             url: image.link,
             type: "IMAGE",
           })),
-          caption: "#reddit #redditnepal",
+          caption: "#reddit #redditnepal #nepal #fyp #quotes #information",
         });
       }
 

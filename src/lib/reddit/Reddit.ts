@@ -139,6 +139,7 @@ class Reddit {
 
   async makeCarouselData({ postId }: { postId: string }): Promise<RPost> {
     try {
+      console.log("getting comments of curated post, can take some time")
       const post = await unpromise<Submission>(
         this.redditClient
           .getSubmission(postId)
@@ -152,7 +153,7 @@ class Reddit {
 
       //sort the comments by upvotes
       // post.comments.sort((a: any, b: any) => b.ups - a.ups);
-
+      console.log("filtering of comments started");
       const trimmedTree = [];
       /**
        * trim the whole tree only with required fields and
@@ -245,6 +246,8 @@ class Reddit {
         downs: post.downs,
         numComments: post.num_comments,
       };
+
+      console.log("filtering of comments finished");
 
       // we only need 10 carousel items, 1 the original post and 9 comments
       return {

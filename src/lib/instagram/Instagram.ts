@@ -41,7 +41,6 @@ class Instagram {
     } else {
       axiosRequestConfig.url = `${this.base_url}/${this.api_version}${axiosRequestConfig.url}`;
     }
-    console.log(axiosRequestConfig);
     return axios(axiosRequestConfig);
   }
 
@@ -139,7 +138,6 @@ class Instagram {
   }) {
     //create carouselItem
     const carousel_items: string[] = [];
-    console.log("creating carousel item");
     try {
       // TODO: convert to promise.all
       for (let resource of resources) {
@@ -151,15 +149,15 @@ class Instagram {
             : await this.createVideoCarouselItem({
                 video_url: resource.url,
               });
-        console.log("carousel item container id", carouselItemRes.data.id);
+        console.log(
+          "carousel item container id created",
+          carouselItemRes.data.id
+        );
 
         carousel_items.push(carouselItemRes.data.id);
       }
       console.log("container-list", carousel_items);
-      console.log(
-        "container-list",
-        encodeURIComponent(carousel_items.join(","))
-      );
+
       //create carousel
       console.log("creating carousel container");
       const carouselRes = await this.createCarousel({
@@ -172,7 +170,7 @@ class Instagram {
       const publishRes = await this.publishCarousel({
         creation_id: carouselRes.data.id,
       });
-      console.log("published carousel");
+      console.log("carousel published");
       return { data: publishRes.data };
     } catch (e: any) {
       console.log(e.type === AxiosError ? e.response : e);

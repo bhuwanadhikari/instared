@@ -33,7 +33,7 @@ class Imgur {
   //
   async uploadImage({ imagePath }: { imagePath: string }) {
     try {
-      console.log("uploading");
+      console.log(`uploading to imgur: ${imagePath}`);
       const formData = new FormData();
       formData.append("image", fs.createReadStream(imagePath)); //absolute path
       return await this.invoke({
