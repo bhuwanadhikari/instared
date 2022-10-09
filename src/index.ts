@@ -1,6 +1,6 @@
 require("dotenv").config();
 import Instared from "./lib/instared/Instared";
-import { fbConfig, imgurConfig, redditConfig } from "./constants";
+import { appConfig, fbConfig, imgurConfig, redditConfig } from "./constants";
 import { getAppRootDir } from "./utils/common";
 
 const instared = new Instared({
@@ -33,7 +33,7 @@ const instared = new Instared({
 try {
   const payload = instared.doAPost({
     subreddit: "nepal",
-    numberOfPosts: 1,
+    numberOfPosts: appConfig.numberOfPostsCuratedfromASubreddit,
   });
 
   console.log(payload);

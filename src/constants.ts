@@ -34,8 +34,9 @@ export const appConfig = {
     "nepal",
     "india",
   ],
-  numberOfPostsCuratedfromASubreddit:
-    process.env.APP_NUMBER_OF_POSTS_CURATED_FROM_A_SUBREDDIT || 2,
+  numberOfPostsCuratedfromASubreddit: parseInt(
+    process.env.APP_NUMBER_OF_POSTS_CURATED_FROM_A_SUBREDDIT || "1"
+  ),
 };
 
 export const instagramErrorCodes = {
