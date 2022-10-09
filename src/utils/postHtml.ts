@@ -1,5 +1,6 @@
 import { RedditUser, Subreddit } from "snoowrap";
 import { RComment, RPost } from "../lib/reddit/types";
+import { numFormatter } from "./common";
 
 export const getPostHtml = ({
   thumbnail,
@@ -153,11 +154,11 @@ export const getPostHtml = ({
           <div class="footer">
             <div class="upvotes">
               <i class="material-icons upvote-icon">file_upload</i>
-              <div>${ups}</div>
+              <div>${numFormatter.format(ups)}</div>
             </div>
             <div class="comments">
               <i class="material-icons comment-icon">mode_comment</i>
-              <div>${numComments}</div>
+              <div>${numFormatter.format(numComments)}</div>
             </div>
           </div>
         </div>

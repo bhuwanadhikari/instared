@@ -139,7 +139,7 @@ class Reddit {
 
   async makeCarouselData({ postId }: { postId: string }): Promise<RPost> {
     try {
-      console.log("getting comments of curated post, can take some time")
+      console.log("getting comments of curated post, can take some time");
       const post = await unpromise<Submission>(
         this.redditClient
           .getSubmission(postId)
@@ -261,6 +261,7 @@ class Reddit {
 
   private async generatePostImage(post: RPost): Promise<{ imagePath: string }> {
     try {
+      console.log(`generating post image for ${post.name}`);
       const imagePath = `./images/${post.name}__carousel_0.png`;
 
       await nodeHtmlToImage({
@@ -279,6 +280,7 @@ class Reddit {
     rank: number
   ): Promise<{ imagePath: string }> {
     try {
+      console.log(`generating comment image for ${rank + 1}`);
       const imagePath = `./images/${comment.postId}__carousel_${rank + 1}.png`;
       await nodeHtmlToImage({
         output: imagePath,

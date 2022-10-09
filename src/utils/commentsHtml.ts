@@ -1,5 +1,6 @@
 import { RedditUser, Subreddit } from "snoowrap";
 import { RComment } from "../lib/reddit/types";
+import { numFormatter } from "./common";
 
 export const getCommentsHtml = ({
   author,
@@ -174,11 +175,11 @@ export const getCommentsHtml = ({
           <div class="footer">
             <div class="upvotes">
               <i class="material-icons upvote-icon">file_upload</i>
-              <div>${ups}</div>
+              <div>${numFormatter.format(ups)}</div>
             </div>
             <div class="comments">
               <i class="material-icons comment-icon">mode_comment</i>
-              <div>${num_replies}</div>
+              <div>${numFormatter.format(num_replies)}</div>
             </div>
           </div>
         </div>
@@ -210,11 +211,11 @@ export const getCommentsHtml = ({
           <div class="footer">
             <div class="upvotes">
               <i class="material-icons upvote-icon">file_upload</i>
-              <div>${reply.ups}</div>
+              <div>${numFormatter.format(reply.ups)}</div>
             </div>
             <div class="comments">
               <i class="material-icons comment-icon">mode_comment</i>
-              <div>${reply.num_replies}</div>
+              <div>${numFormatter.format(reply.num_replies)}</div>
             </div>
           </div>
         </div>

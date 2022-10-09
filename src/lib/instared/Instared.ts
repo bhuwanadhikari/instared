@@ -38,6 +38,13 @@ class Instared {
         subreddit: subreddit,
       });
 
+      if (curatedPosts.length === 0) {
+        console.log("Couldn't find postable posts")
+        return {
+          message: "No posts are postable",
+        };
+      }
+
       console.log(`shortlisted to ${curatedPosts.length} curated posts`);
 
       const locallyGeneratedImages = [];

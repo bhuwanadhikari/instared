@@ -14,6 +14,8 @@ export const delay = (t: number) =>
 //   return JSON.parse(raw.content.toString);
 // };
 
+export const numFormatter = Intl.NumberFormat("en", { notation: "compact" });
+
 export function getAppRootDir() {
   let currentDir = __dirname;
   while (!fs.existsSync(path.join(currentDir, "package.json"))) {
