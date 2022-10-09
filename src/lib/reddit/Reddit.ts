@@ -72,9 +72,12 @@ class Reddit {
   async getCuratedPosts({ subreddit }: { subreddit: string }) {
     try {
       //get top posts
+      console.log("getting top posts");
       const topPosts = await this.redditClient
         .getSubreddit(subreddit)
-        .getTop({ time: "day" });
+        .getTop({ time: "day", limit: 400, count: 400 });
+
+      console.log(`got ${topPosts.length} top posts from ${subreddit}`);
 
       const filteredTopPosts: any = topPosts.reduce((prev: any[], post) => {
         const hasEnoughComments = post.num_comments >= 5;

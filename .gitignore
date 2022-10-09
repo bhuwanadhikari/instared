@@ -1,5 +1,6 @@
 node_modules
 src/lib/reddit/post.comments.ts
-images
+images/*
+!images/infoicon.png
 token.json
 .env

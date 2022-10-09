@@ -67,7 +67,7 @@ router.use((req, res, next) => {
 router.use("/instared/do-a-post", async (req: Request, res: Response) => {
   try {
     const payload = await instared.doAPost({
-      subreddit: "nepal",
+      subreddit: "askreddit",
       numberOfPosts: 1,
     });
 

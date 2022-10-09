@@ -38,6 +38,8 @@ class Instared {
         subreddit: subreddit,
       });
 
+      console.log(`shortlisted to ${curatedPosts.length} curated posts`);
+
       const locallyGeneratedImages = [];
 
       // image generation
