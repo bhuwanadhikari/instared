@@ -33,6 +33,10 @@ IMGUR_CLIENT_SECRET=<imgur-app-client-secret>
 APP_SUBREDDITS_TO_CURATE_POSTS=<number-of-post-to-be-used-to-post-to-instagram>
 APP_NUMBER_OF_POSTS_CURATED_FROM_A_SUBREDDIT=<number-of-post-to-be-used-to-post-to-instagram>
 ```
+
+`yarn build` builds the script in `build` folder. 
+`./job.sh` executes the built script. s
+
 Limitations
 - For now only top posts can be used to post to instagram but code can be tweaked to make images of hot or popular or recent posts
 - Automation for refreshing the facebook app access token is not made so, the `FB_LONG_LIVED_TOKEN` in env vars should be updated every two months for now. 

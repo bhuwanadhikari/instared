@@ -35,8 +35,6 @@ try {
     subreddit: "nepal",
     numberOfPosts: appConfig.numberOfPostsCuratedfromASubreddit,
   });
-
-  console.log(payload);
 } catch (e) {
   console.log("ERROR OCCURED");
   console.log(e);

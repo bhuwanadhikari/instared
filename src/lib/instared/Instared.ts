@@ -74,7 +74,7 @@ class Instared {
           caption: "#reddit #redditnepal #nepal #fyp #quotes #information",
         });
       }
-
+      console.log("Action(s) successful..")
       return {
         success: true,
       };
