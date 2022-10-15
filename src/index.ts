@@ -33,7 +33,7 @@ const instared = new Instared({
   },
 });
 
-cron.schedule("* * * * *", async () => {
+cron.schedule("*/10 * * * *", async () => {
   try {
     const payload = await instared.doAPost({
       subreddit: "nepal",
