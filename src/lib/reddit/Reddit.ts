@@ -1,5 +1,5 @@
 import Snoowrap, { Submission } from "snoowrap";
-import { localPost } from "./post.comments";
+// import { localPost } from "./post.comments";
 import { RComment, RedditConfig, RPost } from "./types";
 import nodeHtmlToImage from "node-html-to-image";
 import { getCommentsHtml } from "../../utils/commentsHtml";
