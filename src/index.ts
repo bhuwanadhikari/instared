@@ -2,6 +2,9 @@ require("dotenv").config();
 import Instared from "./lib/instared/Instared";
 import { appConfig, fbConfig, imgurConfig, redditConfig } from "./constants";
 import { getAppRootDir } from "./utils/common";
+import fs from "fs";
+
+import cron from "node-cron";
 
 const instared = new Instared({
   redditConfig: {
@@ -30,12 +33,14 @@ const instared = new Instared({
   },
 });
 
-try {
-  const payload = instared.doAPost({
-    subreddit: "nepal",
-    numberOfPosts: appConfig.numberOfPostsCuratedfromASubreddit,
-  });
-} catch (e) {
-  console.log("ERROR OCCURED");
-  console.log(e);
-}
+cron.schedule("* * * * *", async () => {
+  try {
+    const payload = await instared.doAPost({
+      subreddit: "nepal",
+      numberOfPosts: appConfig.numberOfPostsCuratedfromASubreddit,
+    });
+  } catch (e) {
+    console.log("ERROR OCCURED");
+    console.log(e);
+  }
+});

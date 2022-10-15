@@ -7,9 +7,9 @@ import { redditConfig } from "../../constants";
 import { getPostHtml } from "../../utils/postHtml";
 
 export const MAX_REPLIES_LIMIT = 2;
-export const MAX_CHARACTER_LENGTH = 560;
+export const MAX_CHARACTER_LENGTH = 620;
 export const MAX_LENGTH_OF_POST_TITLE = 300;
-export const MAX_LENGTH_OF_POST_SELFTEXT = 300;
+export const MAX_LENGTH_OF_POST_SELFTEXT = 350;
 
 //TODO : ERROR HANDLING IS FULLY REMAINING
 
@@ -66,7 +66,7 @@ class Reddit {
       clientSecret: redditClientConfig.clientSecret,
       password: redditClientConfig.password,
     });
-    this.redditClient.config({ requestDelay: 1000 });
+    this.redditClient.config({ requestDelay: 1000, debug: true });
   }
 
   async getCuratedPosts({ subreddit }: { subreddit: string }) {
@@ -75,8 +75,7 @@ class Reddit {
       console.log("getting top posts");
       const topPosts = await this.redditClient
         .getSubreddit(subreddit)
-        .getTop({ time: "day", limit: 400, count: 400 });
-
+        .getTop({ time: "day", limit: 200, count: 200 });
       console.log(`got ${topPosts.length} top posts from ${subreddit}`);
 
       const filteredTopPosts: any = topPosts.reduce((prev: any[], post) => {
