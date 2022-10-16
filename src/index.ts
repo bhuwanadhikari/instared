@@ -33,26 +33,26 @@ const instared = new Instared({
   },
 });
 
-// cron.schedule("*/10 * * * *", async () => {
-//   try {
-//     const payload = await instared.doAPost({
-//       subreddit: "nepal",
-//       numberOfPosts: appConfig.numberOfPostsCuratedfromASubreddit,
-//     });
-//   } catch (e) {
-//     console.log("ERROR OCCURED");
-//     console.log(e);
-//   }
-// });
+cron.schedule("0 21 * * *", async () => {
+  try {
+    const payload = await instared.doAPost({
+      subreddit: "nepal",
+      numberOfPosts: appConfig.numberOfPostsCuratedfromASubreddit,
+    });
+  } catch (e) {
+    console.log("ERROR OCCURED");
+    console.log(e);
+  }
+});
 
-try {
-  console.log(redditConfig);
-  console.log(imgurConfig);
-  const payload = instared.doAPost({
-    subreddit: "nepal",
-    numberOfPosts: appConfig.numberOfPostsCuratedfromASubreddit,
-  });
-} catch (e) {
-  console.log("ERROR OCCURED");
-  console.log(e);
-}
+// try {
+//   console.log(redditConfig);
+//   console.log(imgurConfig);
+//   const payload = instared.doAPost({
+//     subreddit: "nepal",
+//     numberOfPosts: appConfig.numberOfPostsCuratedfromASubreddit,
+//   });
+// } catch (e) {
+//   console.log("ERROR OCCURED");
+//   console.log(e);
+// }
