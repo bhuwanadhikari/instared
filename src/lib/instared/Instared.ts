@@ -39,13 +39,14 @@ class Instared {
       });
 
       if (curatedPosts.length === 0) {
-        console.log("Couldn't find postable posts")
+        console.log("Couldn't find postable posts");
         return {
           message: "No posts are postable",
         };
       }
 
       console.log(`shortlisted to ${curatedPosts.length} curated posts`);
+      console.log("MEMORY USED IS", process.memoryUsage());
 
       const locallyGeneratedImages = [];
 
@@ -74,7 +75,7 @@ class Instared {
           caption: "#reddit #redditnepal #nepal #fyp #quotes #information",
         });
       }
-      console.log("Action(s) successful..")
+      console.log("Action(s) successful..");
       return {
         success: true,
       };
