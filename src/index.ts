@@ -46,6 +46,8 @@ const instared = new Instared({
 // });
 
 try {
+  console.log(redditConfig);
+  console.log(imgurConfig);
   const payload = instared.doAPost({
     subreddit: "nepal",
     numberOfPosts: appConfig.numberOfPostsCuratedfromASubreddit,

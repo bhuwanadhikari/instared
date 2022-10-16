@@ -5,3 +5,5 @@ images/*
 token.json
 .env
 build
+cron.log
+cronjob.log
