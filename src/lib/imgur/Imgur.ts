@@ -59,7 +59,7 @@ class Imgur {
       return responses;
     } catch (e) {
       console.log(e);
-      // throw e;
+      throw e;
     }
   }
 }
