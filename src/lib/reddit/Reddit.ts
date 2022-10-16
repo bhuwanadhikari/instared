@@ -260,13 +260,13 @@ class Reddit {
 
   private async generatePostImage(post: RPost): Promise<{ imagePath: string }> {
     try {
-      console.log(`generating post image for ${post.name}`);
       const imagePath = `./images/${post.name}__carousel_0.png`;
 
       await nodeHtmlToImage({
         output: imagePath,
         html: getPostHtml(post),
       });
+      console.log(`generated post image for ${post.name}`);
       return { imagePath };
     } catch (e) {
       throw e;
@@ -279,12 +279,12 @@ class Reddit {
     rank: number
   ): Promise<{ imagePath: string }> {
     try {
-      console.log(`generating comment image for ${rank + 1}`);
       const imagePath = `./images/${comment.postId}__carousel_${rank + 1}.png`;
       await nodeHtmlToImage({
         output: imagePath,
         html: getCommentsHtml(comment),
       });
+      console.log(`generated comment image for ${rank + 1}`);
       return {
         imagePath,
       };
@@ -296,9 +296,11 @@ class Reddit {
   // 9 images of comments
   private async generateCommentsCarouselImages(comments: RComment[]) {
     try {
-      const commentsImages = await Promise.all(
-        comments.map((comment, i) => this.generateCommentImage(comment, i))
-      );
+      const commentsImages = [];
+      for (let [i, comment] of comments.entries()) {
+        commentsImages.push(await this.generateCommentImage(comment, i));
+      }
+
       return commentsImages;
     } catch (e) {
       throw e;
@@ -309,11 +311,11 @@ class Reddit {
   async generateCarouselImages({ postId }: { postId: string }) {
     try {
       const post = await this.makeCarouselData({ postId });
-      const images = await Promise.all([
-        this.generatePostImage(post),
-        this.generateCommentsCarouselImages(post.comments),
-      ]);
-      return [images[0], ...images[1]];
+      const postImage = await this.generatePostImage(post);
+      const otherImages = await this.generateCommentsCarouselImages(
+        post.comments
+      );
+      return [postImage, ...otherImages];
     } catch (e) {
       throw e;
     }
