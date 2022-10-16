@@ -35,7 +35,9 @@ APP_NUMBER_OF_POSTS_CURATED_FROM_A_SUBREDDIT=<number-of-post-to-be-used-to-post-
 ```
 
 `yarn build` builds the script in `build` folder. 
-`./job.sh` executes the built script. s
+`./job.sh` executes the built script. 
+
+A cronjob can be created to make automatic post to instagram that publishes curated posts reddit at particular time of the everyday.  
 
 Limitations
 - For now only top posts can be used to post to instagram but code can be tweaked to make images of hot or popular or recent posts

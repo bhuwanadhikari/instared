@@ -33,6 +33,8 @@ const instared = new Instared({
   },
 });
 
+console.log("The app has started running...")
+
 cron.schedule("0 21 * * *", async () => {
   try {
     const payload = await instared.doAPost({
