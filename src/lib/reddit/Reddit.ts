@@ -174,8 +174,16 @@ class Reddit {
         return true;
       });
 
+      // remove if comment has gifs or links
+      const filteredByGifs = trimmedTree.filter((a) => {
+        if (a.body.includes("![gif]") || a.body.includes("https://www.")) {
+          return false;
+        }
+        return true;
+      });
+
       // final sorting based on the total points of self and child
-      filteredByDeleted.sort((a, b) => {
+      filteredByGifs.sort((a, b) => {
         const sumRightPoints =
           b.ups +
           Number(b.replies?.length) +
@@ -191,7 +199,7 @@ class Reddit {
       });
 
       // remake data based on length of characters of replies
-      const dataBasedOnCharLength = filteredByDeleted.reduce((prev, curr) => {
+      const dataBasedOnCharLength = filteredByGifs.reduce((prev, curr) => {
         // make array of length of characters in the body [parent, child1, child2]
         const lengthArr = [
           Number(curr.body?.length || 0),
