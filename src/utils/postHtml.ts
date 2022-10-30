@@ -74,6 +74,7 @@ export const getPostHtml = ({
       .header-right {
         display: flex;
         flex-direction: column;
+        gap: 2px;
         /* gap: 4px; */
         /* line-height: 0.1rem; */
       }
@@ -90,6 +91,7 @@ export const getPostHtml = ({
 
       .main-text-title {
         font-size: 1.05rem;
+        font-weight: bold;
       }
 
       .main-text-selftext {

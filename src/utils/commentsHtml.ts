@@ -103,6 +103,7 @@ export const getCommentsHtml = ({
         width: 24px;
         height: 24px;
         border-radius: 12px;
+        background-color: #ff430155
       }
   
       .header-right {

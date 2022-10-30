@@ -5,6 +5,7 @@ import nodeHtmlToImage from "node-html-to-image";
 import { getCommentsHtml } from "../../utils/commentsHtml";
 import { redditConfig } from "../../constants";
 import { getPostHtml } from "../../utils/postHtml";
+import axios from "axios";
 
 export const MAX_REPLIES_LIMIT = 2;
 export const MAX_CHARACTER_LENGTH = 620;
@@ -67,6 +68,18 @@ class Reddit {
       password: redditClientConfig.password,
     });
     this.redditClient.config({ requestDelay: 1000, debug: true });
+  }
+
+  private async getUserImage(username: string) {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `https://www.reddit.com/user/${username}/about.json`,
+      });
+      return response.data.data.icon_img?.split("?")[0];
+    } catch (e) {
+      // console.log(e);
+    }
   }
 
   async getCuratedPosts({ subreddit }: { subreddit: string }) {
@@ -256,10 +269,20 @@ class Reddit {
 
       console.log("filtering of comments finished");
 
+      console.log("getting thumbnail of users");
+      const usableComments = dataBasedOnCharLength.slice(0, 9);
+
+      for (let [index, comment] of usableComments.entries()) {
+        const userImage = await this.getUserImage(comment.author);
+        usableComments[index].thumbnail = userImage
+          ? userImage
+          : comment.thumbnail;
+      }
+      console.log("finished getting user thumbnails")
       // we only need 10 carousel items, 1 the original post and 9 comments
       return {
         ...usablePost,
-        comments: dataBasedOnCharLength.slice(0, 9),
+        comments: usableComments,
       };
     } catch (e) {
       throw e;
