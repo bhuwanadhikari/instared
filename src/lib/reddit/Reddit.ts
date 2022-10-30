@@ -82,6 +82,18 @@ class Reddit {
     }
   }
 
+  private async getSubredditImage(name: string) {
+    try {
+      const response = await axios({
+        method: "get",
+        url: `https://www.reddit.com/r/${name}/about.json`,
+      });
+      return response.data.data.community_icon?.split("?")[0];
+    } catch (e) {
+      // console.log(e);
+    }
+  }
+
   async getCuratedPosts({ subreddit }: { subreddit: string }) {
     try {
       //get top posts
@@ -253,7 +265,6 @@ class Reddit {
       }, []);
 
       // TODO: DON'T POST IF THE NUMBER OF COMMENTS IS LESS THAN 5
-
       const usablePost = {
         thumbnail: redditConfig.redditLogoUrl,
         id: post.id,
@@ -266,10 +277,13 @@ class Reddit {
         downs: post.downs,
         numComments: post.num_comments,
       };
-
       console.log("filtering of comments finished");
+      console.log("getting thumbnail of users and subreddit");
+      const subredditImage = await this.getSubredditImage(usablePost.subreddit);
+      usablePost.thumbnail = subredditImage
+        ? subredditImage
+        : usablePost.thumbnail;
 
-      console.log("getting thumbnail of users");
       const usableComments = dataBasedOnCharLength.slice(0, 9);
 
       for (let [index, comment] of usableComments.entries()) {
@@ -278,7 +292,7 @@ class Reddit {
           ? userImage
           : comment.thumbnail;
       }
-      console.log("finished getting user thumbnails")
+      console.log("finished getting thumbnails of user and subreddit");
       // we only need 10 carousel items, 1 the original post and 9 comments
       return {
         ...usablePost,

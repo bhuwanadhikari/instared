@@ -41,7 +41,7 @@ export const getCommentsHtml = ({
       .post-container {
         zoom: 3;
         background-color: #111;
-        padding: 24px;
+        padding: 28px;
         width: 400px;
         height: 500px;
         box-sizing: border-box;
@@ -103,7 +103,7 @@ export const getCommentsHtml = ({
         width: 24px;
         height: 24px;
         border-radius: 12px;
-        background-color: #ff430155
+        background-color: #ffc4b4
       }
   
       .header-right {
