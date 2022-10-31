@@ -8,6 +8,7 @@ export const getCommentsHtml = ({
   num_replies,
   replies,
   ups,
+  isOP,
   thumbnail,
 }: RComment) => {
   console.log();
@@ -116,6 +117,12 @@ export const getCommentsHtml = ({
         color: #bbb;
         font-size: 0.7rem;
       }
+
+      .op {
+        font-size: 0.7rem;
+        color: rgb(0, 121, 211);
+        font-weight: bold;
+      }
   
       .main-text-body {
         /* width: calc(540px - 24px); */
@@ -166,7 +173,7 @@ export const getCommentsHtml = ({
             </div>
             <div class="header-right">
               <div class="author">
-                by u/${author}
+                by u/${author} ${isOP ? `<span class="op" >OP</span>` : ""}
               </div>
             </div>
           </div>
@@ -202,7 +209,7 @@ export const getCommentsHtml = ({
             </div>
             <div class="header-right">
               <div class="author">
-                by u/${reply.author}
+                by u/${reply.author} ${reply.isOP ? `<span class="op" >OP</span>` : ""}
               </div>
             </div>
           </div>

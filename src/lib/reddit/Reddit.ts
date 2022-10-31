@@ -19,18 +19,19 @@ const unpromise = async <T>(promise: Promise<T>) => {
   return result as Omit<T, "then" | "catch" | "finally">;
 };
 
-const treeMaker = (comment: any) => {
+const treeMaker = (comment: any, postAuthor: string) => {
   // assign depth to be zero for every comment
   let depth = 0;
   // recursion on every comment's reply
-  return makeTree(comment, depth);
+  return makeTree(comment, depth, postAuthor);
 };
 
 //makes trimmed tree
-const makeTree: any = (bush: any, depth: number) => {
+const makeTree: any = (bush: any, depth: number, postAuthor:string) => {
   //take only required fields
   const obj: any = {
     author: bush.author.name,
+    isOP: bush.author.name === postAuthor,
     thumbnail: redditConfig.redditLogoUrl,
     body: bush.body,
     ups: bush.ups,
@@ -49,7 +50,7 @@ const makeTree: any = (bush: any, depth: number) => {
 
   // loop to trim
   for (let [index, reply] of sortedReplies.entries()) {
-    const rrs: any = makeTree(reply, depth);
+    const rrs: any = makeTree(reply, depth, postAuthor);
     obj.replies.push(rrs);
     if (index >= MAX_REPLIES_LIMIT - 1) break;
   }
@@ -184,7 +185,7 @@ class Reddit {
        * dont take any except parent, child1 and child2
        */
       for (let c of post.comments) {
-        trimmedTree.push(treeMaker(c));
+        trimmedTree.push(treeMaker(c, post.author.name));
       }
 
       //remove if any deleted or large text sizes

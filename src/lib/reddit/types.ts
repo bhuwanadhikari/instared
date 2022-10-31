@@ -26,6 +26,7 @@ export type RPost = {
 
 export type RComment = {
   author: string;
+  isOP: boolean;
   body: string;
   ups: number;
   num_replies: number;
