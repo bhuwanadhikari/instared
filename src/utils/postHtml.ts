@@ -11,6 +11,9 @@ export const getPostHtml = ({
   selftext,
   ups,
   downs,
+  flairColor,
+  flairBackground,
+  flair,
 }: RPost) => {
   const hasSelftext = Boolean(selftext);
   /*html*/
@@ -87,8 +90,15 @@ export const getPostHtml = ({
         font-size: 0.7rem;
         line-height: 0.8rem;
       }
-  
 
+      .flair {
+        border-radius: 2px;
+        background-color: ${flairBackground};
+        color: ${flairColor === "dark" ? "#020202" : "#fff"};
+        padding: 2px 4px;
+        font-size:0.6rem;
+      }
+  
       .main-text-title {
         font-size: 1.05rem;
         font-weight: bold;
@@ -144,6 +154,15 @@ export const getPostHtml = ({
               </div>
             </div>
           </div>
+          ${
+            flair
+              ? `
+              <div>
+                <span class="flair">${flair}</span>
+              </div>
+              `
+              : ""
+          }
           <div class="main-text-title">
             ${title} 
           </div>

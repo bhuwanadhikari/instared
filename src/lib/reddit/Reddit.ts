@@ -27,7 +27,7 @@ const treeMaker = (comment: any, postAuthor: string) => {
 };
 
 //makes trimmed tree
-const makeTree: any = (bush: any, depth: number, postAuthor:string) => {
+const makeTree: any = (bush: any, depth: number, postAuthor: string) => {
   //take only required fields
   const obj: any = {
     author: bush.author.name,
@@ -277,6 +277,9 @@ class Reddit {
         name: post.name,
         downs: post.downs,
         numComments: post.num_comments,
+        flairColor: post.link_flair_text_color,
+        flairBackground: post.link_flair_background_color,
+        flair: post.link_flair_text,
       };
       console.log("filtering of comments finished");
       console.log("getting thumbnail of users and subreddit");

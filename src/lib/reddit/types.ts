@@ -22,6 +22,10 @@ export type RPost = {
   subreddit: string;
   numComments: number;
   comments: RComment[];
+
+  flairColor: string | null;
+  flairBackground: string | null;
+  flair: string | null;
 };
 
 export type RComment = {
