@@ -5,7 +5,8 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": "rm -rf build/ && tsc"
+    "build": "rm -rf build/ && tsc",
+    "walk": "export NODE_ENV=production && node build/index.js"
   },
   "keywords": [],
   "author": "",

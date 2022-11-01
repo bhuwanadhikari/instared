@@ -59,21 +59,26 @@ class Instared {
         locallyGeneratedImages.push(aPostImages);
       }
 
-      const imgurImages = [];
-      for (let aPostImages of locallyGeneratedImages) {
-        const response = await this.imgur.uploadImages({
-          imagePaths: aPostImages.map(
-            (image) => getAppRootDir() + image.imagePath.slice(1)
-          ),
-        });
-        imgurImages.push(response);
-        await this.instagram.makeCarouselAndPost({
-          resources: response.map((image: any) => ({
-            url: image.link,
-            type: "IMAGE",
-          })),
-          caption: "#reddit #redditnepal #nepal #fyp #quotes #information",
-        });
+      if (process.env.NODE_ENV === "production") {
+        const imgurImages = [];
+        for (let aPostImages of locallyGeneratedImages) {
+          const response = await this.imgur.uploadImages({
+            imagePaths: aPostImages.map(
+              (image) => getAppRootDir() + image.imagePath.slice(1)
+            ),
+          });
+          imgurImages.push(response);
+          await this.instagram.makeCarouselAndPost({
+            resources: response.map((image: any) => ({
+              url: image.link,
+              type: "IMAGE",
+            })),
+            caption: "#reddit #redditnepal #nepal #fyp #quotes #information",
+          });
+        }
+      } else {
+        // for just test
+        console.log("Skipped uploads and posting");
       }
       console.log("Action(s) successful..");
       return {
