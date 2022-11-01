@@ -106,7 +106,9 @@ class Reddit {
 
       const filteredTopPosts: any = topPosts.reduce((prev: any[], post) => {
         const hasEnoughComments = post.num_comments >= 5;
-        const isImageFree = !Boolean(post.preview?.images);
+        const isImageFree =
+          // @ts-ignore
+          !Boolean(post.preview?.images) && !Boolean(post.gallery_data);
         const isVideoFree = !post.is_video;
 
         //filter by char length

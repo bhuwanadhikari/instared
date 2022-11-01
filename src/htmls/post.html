@@ -22,7 +22,7 @@
     .post-container {
       zoom: 3;
       background-color: #111;
-      padding: 24px;
+      padding: 28px;
       width: 400px;
       height: 500px;
       box-sizing: border-box;
@@ -58,6 +58,9 @@
     .header-right {
       display: flex;
       flex-direction: column;
+      gap: 2px;
+      /* gap: 4px; */
+      /* line-height: 0.1rem; */
     }
 
 
@@ -69,10 +72,21 @@
       line-height: 0.8rem;
     }
 
-    .main-text-title {
-      font-size: 1.05rem;
+    .flair {
+      vertical-align: middle;
+      border-radius: 2px;
+      background-color: ${flairBackground};
+      color: ${flairColor === "dark" ? "#020202" : "#fff"};
+      padding: 2px 4px;
+      font-size: 0.6rem;
+      font-weight: normal;
     }
 
+    .main-text-title {
+      font-size: 1.05rem;
+      font-weight: bold;
+      padding: 2px 0;
+    }
 
     .main-text-selftext {
       padding-top: 6px;
@@ -125,22 +139,28 @@
             </div>
           </div>
         </div>
+
         <div class="main-text-title">
-          "He can safely dodge the interpol if he flees to Taiwan since it is one of the few places where interpol has
-          no jurisdiction, others being places like North Korea where he can't go due to obvious reasons."
+          ${
+          flair ? `
+          <span class="flair">${flair}</span>
+          ` : ""
+          } ${title}
         </div>
-        <div class="main-text-selftext">
-          "He can safely dodge the interpol if he flees to Taiwan since it is one of the few places where interpol has
-          no jurisdiction, others being places like North Korea where he can't go due to obvious reasons."
-        </div>
+        ${
+        /*html*/
+        hasSelftext
+        ? `<div class="main-text-selftext">${selftext}</div>`
+        : ``
+        }
         <div class="footer">
           <div class="upvotes">
             <i class="material-icons upvote-icon">file_upload</i>
-            <div>${ups}</div>
+            <div>${numFormatter.format(ups)}</div>
           </div>
           <div class="comments">
             <i class="material-icons comment-icon">mode_comment</i>
-            <div>${num_replies}</div>
+            <div>${numFormatter.format(numComments)}</div>
           </div>
         </div>
       </div>

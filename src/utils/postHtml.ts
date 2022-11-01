@@ -90,24 +90,28 @@ export const getPostHtml = ({
         font-size: 0.7rem;
         line-height: 0.8rem;
       }
-
+  
       .flair {
+        vertical-align: middle;
         border-radius: 2px;
         background-color: ${flairBackground};
         color: ${flairColor === "dark" ? "#020202" : "#fff"};
         padding: 2px 4px;
-        font-size:0.6rem;
+        font-size: 0.6rem;
+        font-weight: normal;
       }
   
       .main-text-title {
         font-size: 1.05rem;
         font-weight: bold;
+        padding: 2px 0;
       }
-
+  
       .main-text-selftext {
         padding-top: 6px;
         border-top: 1px solid silver;
       }
+  
       .footer {
         display: flex;
         align-items: center;
@@ -154,17 +158,15 @@ export const getPostHtml = ({
               </div>
             </div>
           </div>
-          ${
-            flair
-              ? `
-              <div>
-                <span class="flair">${flair}</span>
-              </div>
-              `
-              : ""
-          }
+  
           <div class="main-text-title">
-            ${title} 
+            ${
+              flair
+                ? `
+            <span class="flair">${flair}</span>
+            `
+                : ""
+            } ${title}
           </div>
           ${
             /*html*/
