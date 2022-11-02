@@ -1,7 +1,8 @@
  ## Instared (Instagram posts from Reddit)
  
  
- Follow me on instagram <a href="https://www.instagram.com/reddit.nepal/">@reddit.nepal</a>
+
+ Follow me on instagram <br> [![Instagram Badge](https://img.shields.io/badge/-@reddit.nepal-C13584?style=flat-square&labelColor=F44747&logo=instagram&logoColor=white&link=https://instagram.com/reddit.nepal)](https://instagram.com/reddit.nepal)
  
  Instared is a script that automates to post curated posts from reddit to instagram. 
 
