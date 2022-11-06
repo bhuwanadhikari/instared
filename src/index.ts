@@ -1,10 +1,13 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
+dotenv.config({ path: __dirname + "/../.env" });
 import Instared from "./lib/instared/Instared";
 import { appConfig, fbConfig, imgurConfig, redditConfig } from "./constants";
 import { getAppRootDir } from "./utils/common";
 import fs from "fs";
-
 import cron from "node-cron";
+
+//@ts-ignore
+global.__basedir = __dirname;
 
 const instared = new Instared({
   redditConfig: {
@@ -33,7 +36,7 @@ const instared = new Instared({
   },
 });
 
-console.log("The app has started running...")
+console.log("The app has started running...");
 
 // cron.schedule("0 21 * * *", async () => {
 //   try {

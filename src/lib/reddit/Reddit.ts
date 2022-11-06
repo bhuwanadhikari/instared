@@ -311,11 +311,13 @@ class Reddit {
 
   private async generatePostImage(post: RPost): Promise<{ imagePath: string }> {
     try {
-      const imagePath = `./images/${post.name}__carousel_0.png`;
+      const imagePath = // @ts-ignore
+        global.__basedir + "/.." + `/images/${post.name}__carousel_0.png`;
 
       await nodeHtmlToImage({
         output: imagePath,
         html: getPostHtml(post),
+        puppeteerArgs: { timeout: 2 * 60 * 1000 },
       });
       console.log(`generated post image for ${post.name}`);
       return { imagePath };
@@ -330,10 +332,15 @@ class Reddit {
     rank: number
   ): Promise<{ imagePath: string }> {
     try {
-      const imagePath = `./images/${comment.postId}__carousel_${rank + 1}.png`;
+      const imagePath =
+        // @ts-ignore
+        global.__basedir +
+        "/.." +
+        `/images/${comment.postId}__carousel_${rank + 1}.png`;
       await nodeHtmlToImage({
         output: imagePath,
         html: getCommentsHtml(comment),
+        puppeteerArgs: { timeout: 2 * 60 * 1000 },
       });
       console.log(`generated comment image for ${rank + 1}`);
       return {

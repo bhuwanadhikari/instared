@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon src/index.ts",
     "build": "rm -rf build/ && tsc",
-    "walk": "export NODE_ENV=production && node build/index.js"
+    "walk": "export NODE_ENV=production && export ROOT_DIR=. && node build/index.js"
   },
   "keywords": [],
   "author": "",

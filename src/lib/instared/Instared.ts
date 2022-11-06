@@ -64,7 +64,7 @@ class Instared {
         for (let aPostImages of locallyGeneratedImages) {
           const response = await this.imgur.uploadImages({
             imagePaths: aPostImages.map(
-              (image) => getAppRootDir() + image.imagePath.slice(1)
+              (image) => "/" + image.imagePath.slice(1)
             ),
           });
           imgurImages.push(response);
