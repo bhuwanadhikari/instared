@@ -1,11 +1,16 @@
- ## Instared
+ ## Instared (Instagram posts from Reddit)
+ 
+ 
+
+ Follow me on instagram <br> [![Instagram Badge](https://img.shields.io/badge/-@reddit.nepal-C13584?style=flat-square&labelColor=F44747&logo=instagram&logoColor=white&link=https://instagram.com/reddit.nepal)](https://instagram.com/reddit.nepal)
+ 
  Instared is a script that automates to post curated posts from reddit to instagram. 
 
 Top posts from the subreddit are retrieved, filtered if they are postable to instagram, comments are sorted and 10 carousel images are generated from the json we get.. The generated images are uploaded to imgur and the imgur links are used to post to the instagram. If the post has images, videos, too much of characters in the post, very less numbers of comments, then the post is rejected and another best is choosen for the instagram post. 
 
 You can setup your own automation to make instagram post from any subreddits. For that, reddit app, imgur app and instagram(facebook) apps are to be set up to be able to use the apis. 
 
-To make reddit and imgur apps ready to be able to use apis is fairly easy. To make instagram app, some steps are to be followed. You will need to have, facebook page and a professional/business instagram account connected each other.  I suggest some articles  [this](https://www.youtube.com/playlist?list=PL0glhsZ01I-BAFwPmQBWMNqUDnkSlOR6r), [this](https://www.youtube.com/watch?v=Q5kw7vGLqgs&t=1810s&ab_channel=SkoloOnline), and [official docs](https://developers.facebook.com/docs/instagram-api/guides/content-publishing/).
+To make reddit and imgur apps ready to be able to use apis is fairly easy. To make instagram app, some steps are to be followed. You will need to have, facebook page and a professional/business instagram account connected each other.  I suggest [official docs](https://developers.facebook.com/docs/instagram-api/guides/content-publishing/).
 
 After all things are setup, create `.env` file on the root of the script project. And put the followings or see `.env.example` file.
 
@@ -37,7 +42,7 @@ APP_NUMBER_OF_POSTS_CURATED_FROM_A_SUBREDDIT=<number-of-post-to-be-used-to-post-
 `yarn build` builds the script in `build` folder. 
 `./job.sh` executes the built script. 
 
-A cronjob can be created to make automatic post to instagram that publishes curated posts reddit at particular time of the everyday.  
+A cronjob can be created to make automatic post to instagram that publishes curated posts reddit at particular time of the everyday. I've made all the async tasks to run sequentially so that the cronjob will not overload the machine if it's less powerful.
 
 Limitations
 - For now only top posts can be used to post to instagram but code can be tweaked to make images of hot or popular or recent posts
